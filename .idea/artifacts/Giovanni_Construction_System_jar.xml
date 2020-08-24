@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Giovanni_Construction_System:jar">
+    <output-path>$PROJECT_DIR$/../../work/Giovanni Construction</output-path>
+    <root id="archive" name="Giovanni_Construction_System.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/../../work/Giovanni Construction/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="Giovanni_Construction_System" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/commons-beanutils-1.8.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/commons-digester-2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/commons-javaflow-20060411.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/commons-logging-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/groovy-all-2.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/iText-2.1.7.js2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/jcommon-1.0.15.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/jfreechart-1.0.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/poi-3.7-20101029.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/mysql-connector-java-8.0.15.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/jasperreports-6.12.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dad system/Jasper JARS/commons-collections4-4.4.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

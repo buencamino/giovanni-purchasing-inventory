@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="commons-beanutils-1.8.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/commons-beanutils-1.8.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/commons-digester-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/commons-javaflow-20060411.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/commons-logging-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/groovy-all-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/iText-2.1.7.js2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/jcommon-1.0.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/jfreechart-1.0.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../dad system/Jasper JARS/poi-3.7-20101029.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

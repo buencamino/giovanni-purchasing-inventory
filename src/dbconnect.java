@@ -312,7 +312,7 @@ public class dbconnect {
         return rset;
     }
 
-    public void addPurchaseorder(String canvassnum, String preparedby, String supplier1, String supplier2, String supplier3, Vector<Vector<Object>> data, String date) throws Exception {
+    public void addPurchaseorder(String canvassnum, String preparedby, String supplier1, String supplier2, String supplier3, Vector<Vector<Object>> data, String date, int supplierchosen) throws Exception {
         String buffid = null;
         String projectname = null, rsnum = null;
 
@@ -338,7 +338,7 @@ public class dbconnect {
                 projectname = rset.getString("project");
             }
 
-            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_purchaseorder (canvass_id, preparedby, date, projectname) values (?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?)");
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_purchaseorder (canvass_id, preparedby, date, projectname, supplierchosen) values (?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?, " + supplierchosen + ")");
             pstatement.setString(1, canvassnum);
             pstatement.setString(2, preparedby);
             pstatement.setString(3, projectname);
@@ -455,14 +455,23 @@ public class dbconnect {
         return rset;
     }
 
-    public ResultSet getPurchaseorderitems (String purchaseid, String suppliernum) throws Exception{
+    public ResultSet getPurchaseorderitems (String purchaseid) throws Exception{
         rset = null;
+        ResultSet rset1 = null;
+        int supplier = 0;
 
         try
         {
             connect();
             statement = conn.createStatement();
-            rset = statement.executeQuery("select * from tbl_purchaseorderitems where purchaseorder_id = " + purchaseid + " and  supplierchosen = '" + suppliernum + "'");
+            rset1 = statement.executeQuery("select supplierchosen from tbl_purchaseorder where purchaseorder_id = " + purchaseid);
+
+            while (rset1.next())
+            {
+                supplier = rset1.getInt("supplierchosen");
+            }
+
+            rset = statement.executeQuery("select * from tbl_purchaseorderitems where purchaseorder_id = " + purchaseid + " and  supplierchosen = '" + supplier + "'");
         }
         catch (Exception e)
         {

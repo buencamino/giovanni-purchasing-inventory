@@ -23,7 +23,7 @@ public class panel_viewpurchaseorder extends JPanel {
     ResultSet rset, rsetpurchaseinfo, rsetpurchaseitems;
     JScrollPane sp;
     ListSelectionModel listselectionmodel;
-    JButton btn_supplier1, btn_supplier2, btn_supplier3;
+    JButton btn_supplier1, btn_supplier2, btn_supplier3, btn_generate;
     String buff_purchaseid;
     Vector<Vector<Object>> data;
     Vector<Object> record;
@@ -64,6 +64,7 @@ public class panel_viewpurchaseorder extends JPanel {
         listselectionmodel.addListSelectionListener(handler);
         tbl_purchaseorder.setSelectionModel(listselectionmodel);
 
+        /*
         btn_supplier1 = new JButton("View Supplier 1");
         btn_supplier1.addActionListener(control);
         btn_supplier1.setPreferredSize(new Dimension(300,25));
@@ -78,6 +79,12 @@ public class panel_viewpurchaseorder extends JPanel {
         btn_supplier3.addActionListener(control);
         btn_supplier3.setPreferredSize(new Dimension(300,25));
         btn_supplier3.setEnabled(false);
+*/
+
+        btn_generate = new JButton("Generate PO");
+        btn_generate.addActionListener(control);
+        btn_generate.setPreferredSize(new Dimension(900,25));
+        btn_generate.setEnabled(false);
 
         pnl_north = new JPanel(new GridBagLayout());
         pnl_center = new JPanel(new BorderLayout());
@@ -93,6 +100,8 @@ public class panel_viewpurchaseorder extends JPanel {
         pnl_north.add(sp, c);
 
         //second row
+
+        /*
         c.gridy = 1;
         c.gridx = 0;
         c.gridwidth = 1;
@@ -103,6 +112,12 @@ public class panel_viewpurchaseorder extends JPanel {
 
         c.gridx = 2;
         pnl_north.add(btn_supplier3, c);
+         */
+
+        c.gridy = 1;
+        c.gridx = 0;
+        c.gridwidth = 1;
+        pnl_north.add(btn_generate, c);
 
         add(pnl_north, BorderLayout.NORTH);
         add(pnl_center, BorderLayout.CENTER);
@@ -148,9 +163,13 @@ public class panel_viewpurchaseorder extends JPanel {
 
                 x = tbl_purchaseorder.getValueAt(maxIndex, 0);
                 buff_purchaseid = x.toString();
+                /*
                 btn_supplier1.setEnabled(true);
                 btn_supplier2.setEnabled(true);
                 btn_supplier3.setEnabled(true);
+                 */
+                btn_generate.setEnabled(true);
+
             }
         }
     }
@@ -159,6 +178,7 @@ public class panel_viewpurchaseorder extends JPanel {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 
+            /*
             if (source == btn_supplier1) {
                 dbconnect conn3 = new dbconnect();
                 int i;
@@ -347,6 +367,96 @@ public class panel_viewpurchaseorder extends JPanel {
 
                 try {
                     rsetpurchaseitems = conn2.getPurchaseorderitems(buff_purchaseid, "3");
+
+                    while (rsetpurchaseitems.next())
+                    {
+                        i++;
+                    };
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                if (i > 0)
+                {
+                    String suppliername = null;
+
+                    pnl_center.removeAll();
+                    pnl_center.repaint();
+                    pnl_center.revalidate();
+                    dbconnect conn = new dbconnect();
+
+                    ArrayList<Map<String, ?>> dataSource = new ArrayList<Map<String, ?>>();
+
+                    Map<String, Object> parameters = new HashMap<String, Object>();
+
+                    try{
+                        rsetpurchaseitems.first();
+                        do{
+                            Map<String, Object> m = new HashMap<String, Object>();
+                            m.put("quantity", rsetpurchaseitems.getString("quantity"));
+                            m.put("unit", rsetpurchaseitems.getString("unit"));
+                            m.put("description", rsetpurchaseitems.getString("description"));
+                            m.put("unitprice", rsetpurchaseitems.getString("unitprice"));
+                            m.put("amount", rsetpurchaseitems.getString("amount"));
+
+                            dataSource.add(m);
+                        }while(rsetpurchaseitems.next());
+                        rsetpurchaseitems.first();
+
+                        suppliername = rsetpurchaseitems.getString("suppliername");
+                        conn2.close();
+                    }catch (Exception x){
+                        System.out.println(x.getMessage());
+                    }
+
+                    try {
+                        rsetpurchaseinfo = conn.getPurchaseorderinfo(buff_purchaseid);
+
+                        rsetpurchaseinfo.first();
+                        parameters.put("projectname", rsetpurchaseinfo.getString("projectname"));
+                        parameters.put("suppliername", suppliername);
+                        parameters.put("purchaseordernum", rsetpurchaseinfo.getString("purchaseorder_id"));
+                        parameters.put("date", rsetpurchaseinfo.getString("newdate"));
+                        parameters.put("preparedby", rsetpurchaseinfo.getString("preparedby"));
+
+                        conn.close();
+
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+
+                    JRDataSource jrDatasource = new JRBeanCollectionDataSource(dataSource);
+                    JasperReport report = null;
+
+                    try {
+                        //InputStream url1 = getClass().getResourceAsStream("./giovanni_requisitionslip.jrxml");
+                        //JasperDesign dis = JRXmlLoader.load(url1);
+
+                        report = JasperCompileManager.compileReport(getClass().getResourceAsStream("giovanni_purchaseorder.jrxml"));
+                        //report = JasperCompileManager.compileReport(dis);
+                        JasperPrint filledReport = JasperFillManager.fillReport(report, parameters, jrDatasource);
+
+                        pnl_center.add(new JRViewer(filledReport), BorderLayout.CENTER);
+                        pnl_center.repaint();
+                        pnl_center.revalidate();
+                    } catch (JRException jrException) {
+                        jrException.printStackTrace();
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(this, "There is no existing 3rd supplier for this purchase order!", "No 3rd Supplier", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            */
+
+            if (source == btn_generate) {
+                dbconnect conn2 = new dbconnect();
+                int i;
+                i = 0;
+
+                try {
+                    rsetpurchaseitems = conn2.getPurchaseorderitems(buff_purchaseid);
 
                     while (rsetpurchaseitems.next())
                     {

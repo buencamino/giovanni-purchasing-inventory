@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class panel_home_viewpo extends JPanel {
     JLabel lbl_title;
-    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled;
+    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled, btn_generate;
     DefaultTableModel tablemodel;
     Vector<String> headers = new Vector<String>();
     ResultSet rset;
@@ -31,21 +31,34 @@ public class panel_home_viewpo extends JPanel {
         HandleControlButton control = new HandleControlButton();
 
         lbl_title = new JLabel("Available Purchase Orders");
+        /*
         btn_generate1 = new JButton("Generate PO Supplier 1");
         btn_generate2 = new JButton("Generate PO Supplier 2");
         btn_generate3 = new JButton("Generate PO Supplier 3");
+        */
+
         btn_approved = new JButton("Approved by Management");
         btn_cancelled = new JButton("Cancelled/Disapproved");
+        /*
         btn_generate1.setEnabled(false);
         btn_generate2.setEnabled(false);
         btn_generate3.setEnabled(false);
+        */
+
         btn_approved.setEnabled(false);
         btn_cancelled.setEnabled(false);
+        /*
         btn_generate1.addActionListener(control);
+
         btn_generate2.addActionListener(control);
         btn_generate3.addActionListener(control);
+        */
         btn_approved.addActionListener(control);
         btn_cancelled.addActionListener(control);
+        btn_generate = new JButton("Generate PO");
+        btn_generate.setEnabled(false);
+        btn_generate.addActionListener(control);
+
 
         tablemodel = new DefaultTableModel();
         headers.add("PO #");
@@ -95,13 +108,15 @@ public class panel_home_viewpo extends JPanel {
         c.gridy = 2;
         c.gridwidth = 1;
         c.anchor = GridBagConstraints.LINE_START;
-        add(btn_generate1, c);
+        add(btn_generate, c);
 
+        /*
         c.gridx = 1;
         add(btn_generate2, c);
 
         c.gridx = 2;
         add(btn_generate3, c);
+*/
 
         //fourth row
         c.gridx = 0;
@@ -131,9 +146,9 @@ public class panel_home_viewpo extends JPanel {
 
                 x = tbl_records.getValueAt(maxIndex, 0);
                 buff_poid = x.toString();
-                btn_generate1.setEnabled(true);
-                btn_generate2.setEnabled(true);
-                btn_generate3.setEnabled(true);
+                btn_generate.setEnabled(true);
+                //btn_generate2.setEnabled(true);
+                //btn_generate3.setEnabled(true);
                 btn_approved.setEnabled(true);
             }
         }
@@ -162,7 +177,7 @@ public class panel_home_viewpo extends JPanel {
     class HandleControlButton extends Component implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
-
+/*
             if (source == btn_generate1) {
                 dbconnect conn2 = new dbconnect();
                 int i;
@@ -274,6 +289,23 @@ public class panel_home_viewpo extends JPanel {
                 {
                     JOptionPane.showMessageDialog(this, "There is no existing 3rd supplier for this purchase order!", "No 3rd Supplier", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+            */
+
+            if (source == btn_generate)
+            {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+                try {
+                    mainFrame.pnl_center.add(new panel_home_viewpo1(buff_poid), BorderLayout.CENTER);
+                } catch (JRException jrException) {
+                    jrException.printStackTrace();
+                }
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
             }
         }
     }

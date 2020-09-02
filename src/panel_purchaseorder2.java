@@ -28,10 +28,11 @@ public class panel_purchaseorder2 extends JPanel {
     lbl_quantity2, lbl_unit2, lbl_amount2,
     lbl_quantity2a, lbl_unit2a, lbl_amount2a,
     lbl_quantity3, lbl_unit3, lbl_amount3,
-    lbl_quantity3a, lbl_unit3a, lbl_amount3a;
+    lbl_quantity3a, lbl_unit3a, lbl_amount3a, lbl_supplierchosen;
     JButton btn_update, btn_submit;
-    int i;
+    //int i;
     String suppliera, supplierb, supplierc, canvassid, datenow;
+    int supplierchosen;
 
     public panel_purchaseorder2(String canvassnum, String supplier1, String supplier2, String supplier3) throws Exception {
         setLayout(new BorderLayout());
@@ -57,6 +58,7 @@ public class panel_purchaseorder2 extends JPanel {
         btn_update.addActionListener(control);
         btn_submit = new JButton("Submit and Complete Purchase Order");
         btn_submit.addActionListener(control);
+        btn_submit.setEnabled(false);
 
         radio_supplier1 = new JRadioButton("Choose Supplier 1");
         radio_supplier2 = new JRadioButton("Choose Supplier 2");
@@ -65,10 +67,12 @@ public class panel_purchaseorder2 extends JPanel {
         bgroup.add(radio_supplier1);
         bgroup.add(radio_supplier2);
         bgroup.add(radio_supplier3);
+        /*
         radio_supplier1.setEnabled(false);
         radio_supplier2.setEnabled(false);
         radio_supplier3.setEnabled(false);
         btn_update.setEnabled(false);
+        */
 
         lbl_quantity1 = new JLabel("Quantity :");
         lbl_unit1 = new JLabel("Unit Price :");
@@ -91,6 +95,8 @@ public class panel_purchaseorder2 extends JPanel {
         lbl_unit3a = new JLabel("0.0");
         lbl_amount3a = new JLabel("0.0");
 
+        lbl_supplierchosen = new JLabel();
+
         GridBagConstraints c = new GridBagConstraints();
 
         Border border_supplier1 = BorderFactory.createTitledBorder(supplier1);
@@ -110,6 +116,7 @@ public class panel_purchaseorder2 extends JPanel {
         if (supplier3.equals(""))
             pnl_supplier3.setVisible(false);
 
+        /*
         //pnl_supplier1 components
         //first row
         c.gridx = 0;
@@ -235,6 +242,19 @@ public class panel_purchaseorder2 extends JPanel {
         c.anchor = GridBagConstraints.LINE_END;
         pnl_supplier3.add(radio_supplier3, c);
 
+*/
+
+        //panel supplier 1
+        c.gridx = 0;
+        c.gridy = 0;
+        pnl_supplier1.add(radio_supplier1, c);
+
+        //panel supplier 2
+        pnl_supplier2.add(radio_supplier2, c);
+
+        //panel supplier 3
+        pnl_supplier3.add(radio_supplier3, c);
+
         data = new Vector<Vector<Object>>();
 
         tablemodel = new DefaultTableModel();
@@ -249,7 +269,7 @@ public class panel_purchaseorder2 extends JPanel {
         headers.add("Amount 3");
         headers.add("Supplier Chosen");
 
-        selectionHandler handler = new selectionHandler();
+        //selectionHandler handler = new selectionHandler();
 
         dbconnect conn = new dbconnect();
 
@@ -318,10 +338,12 @@ public class panel_purchaseorder2 extends JPanel {
         sp = new JScrollPane(tbl_items);
         sp.setPreferredSize(new Dimension(900, 200));
 
+        /*
         listselectionmodel = tbl_items.getSelectionModel();
         listselectionmodel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listselectionmodel.addListSelectionListener(handler);
         tbl_items.setSelectionModel(listselectionmodel);
+*/
 
         //first row
         c.gridx = 0;
@@ -363,6 +385,9 @@ public class panel_purchaseorder2 extends JPanel {
         c.anchor = GridBagConstraints.LINE_END;
         pnl_entry.add(btn_update, c);
 
+        c.gridx = 1;
+        pnl_entry.add(lbl_supplierchosen, c);
+
         //6th row
         c.gridx = 1;
         c.gridy = 5;
@@ -395,6 +420,7 @@ public class panel_purchaseorder2 extends JPanel {
         tablemodel.fireTableDataChanged();
     }
 
+    /*
     class selectionHandler implements ListSelectionListener
     {
         public void valueChanged(ListSelectionEvent e)
@@ -460,27 +486,33 @@ public class panel_purchaseorder2 extends JPanel {
             }
         }
     }
+*/
 
     class HandleControlButton extends Component implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 
             if (source == btn_update) {
-                String supplier;
                 if (radio_supplier1.isSelected())
-                    supplier = "Supplier 1";
+                    supplierchosen = 1;
                 else if (radio_supplier2.isSelected())
-                    supplier = "Supplier 2";
+                    supplierchosen = 2;
                 else if (radio_supplier3.isSelected())
-                    supplier = "Supplier 3";
+                    supplierchosen = 3;
                 else
-                    supplier = "No Supplier";
+                    supplierchosen = 0;
 
-                updateTable(supplier);
+                updateTable(supplierchosen);
+
+                if (supplierchosen != 0)
+                    lbl_supplierchosen.setText("You have chosen supplier #" + supplierchosen + ".");
+                else
+                    lbl_supplierchosen.setText("You did not choose a supplier.");
 
                 radio_supplier1.setSelected(false);
                 radio_supplier2.setSelected(false);
                 radio_supplier3.setSelected(false);
+                btn_submit.setEnabled(true);
             }
 
             if (source == btn_submit) {
@@ -500,7 +532,7 @@ public class panel_purchaseorder2 extends JPanel {
                 if (withchosen)
                 {
                     try {
-                        conn.addPurchaseorder(canvassid, form_login.fullname, suppliera, supplierb, supplierc, data, datenow);
+                        conn.addPurchaseorder(canvassid, form_login.fullname, suppliera, supplierb, supplierc, data, datenow, supplierchosen);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
@@ -524,9 +556,19 @@ public class panel_purchaseorder2 extends JPanel {
         }
     }
 
-    public void updateTable(String supplier)
+    public void updateTable(Integer supplier)
     {
-        data.get(i).set(9, supplier);
+        String tempsupplier = null;
+
+        if (supplier != 0)
+            tempsupplier = "Supplier " + supplier;
+        else
+            tempsupplier = "No Supplier";
+
+        for (int i = 0; i < data.size(); i++)
+        {
+            data.get(i).set(9, tempsupplier);
+        }
 
         tablemodel.setDataVector(data, headers);
         tablemodel.fireTableDataChanged();

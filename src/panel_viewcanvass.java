@@ -1,6 +1,7 @@
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.swing.JRViewerToolbar;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -203,6 +204,15 @@ public class panel_viewcanvass extends JPanel {
                     report = JasperCompileManager.compileReport(getClass().getResourceAsStream("giovanni_canvasssheet.jrxml"));
                     //report = JasperCompileManager.compileReport(dis);
                     JasperPrint filledReport = JasperFillManager.fillReport(report, parameters, jrDatasource);
+
+                    //JRViewer viewreport = new JRViewer(filledReport);
+                    //remove entire toolbar
+                    //viewreport.remove(0);
+                    //remove only save button
+                    //((JPanel)viewreport.getComponent(0)).remove(0);
+                    //doesn't work
+                    //((JPanel)viewreport.getComponent(0)).remove(1);
+                    //pnl_center.add(viewreport, BorderLayout.CENTER);
 
                     pnl_center.add(new JRViewer(filledReport), BorderLayout.CENTER);
                     pnl_center.repaint();

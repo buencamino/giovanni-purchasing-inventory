@@ -11,10 +11,11 @@ import java.util.Date;
 
 public class panel_requisitionslip extends JPanel {
     JLabel lbl_prepared, lbl_project, lbl_location, lbl_date, lbl_category, lbl_itemtitle, lbl_quantity, lbl_units, lbl_description, lbl_locationdata, lbl_deliverytype, lbl_purpose, lbl_enduser;
-    JTextField text_description, text_purpose, text_enduser;
+    JTextField text_purpose, text_enduser;
     JTextField text_quantity;
+    public static JTextField text_description;
     JPanel pnl_center;
-    JButton btn_additem, btn_delete, btn_submit;
+    JButton btn_additem, btn_delete, btn_submit, btn_search, btn_addstock;
     JScrollPane sp;
     JTable tbl_items;
     Vector<Vector<Object>> data;
@@ -106,7 +107,8 @@ public class panel_requisitionslip extends JPanel {
         lbl_purpose = new JLabel("Purpose :");
         lbl_enduser = new JLabel("End User :");
 
-        text_description = new JTextField(40);
+        text_description = new JTextField(30);
+        text_description.setEditable(false);
         text_quantity = new JTextField(10);
         text_purpose = new JTextField(20);
         text_enduser = new JTextField(20);
@@ -125,12 +127,14 @@ public class panel_requisitionslip extends JPanel {
             }
         });
 
+        /*
         text_description.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 if (text_description.getText().length() >= 100 )
                     e.consume();
             }
         });
+*/
 
         text_quantity.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
@@ -151,6 +155,11 @@ public class panel_requisitionslip extends JPanel {
         btn_submit = new JButton("Submit Requisition Slip");
         btn_submit.setPreferredSize(new Dimension(300,30));
         btn_submit.addActionListener(control);
+        btn_search = new JButton("Search Stocks");
+        btn_search.addActionListener(control);
+        btn_addstock = new JButton("Add Stock");
+        btn_addstock.addActionListener(control);
+        btn_addstock.setEnabled(false);
 
         tbl_items = new JTable(model);
         tbl_items.setDefaultEditor(Object.class, null);
@@ -237,10 +246,16 @@ public class panel_requisitionslip extends JPanel {
         pnl_center.add(lbl_description, c);
 
         c.gridx = 1;
-        c.gridwidth = 3;
+        c.gridwidth = 2;
         c.anchor = GridBagConstraints.LINE_START;
         pnl_center.add(text_description, c);
 
+        c.gridx = 3;
+        c.gridwidth = 1;
+        pnl_center.add(btn_search, c);
+
+        c.gridx = 4;
+        pnl_center.add(btn_addstock, c);
 
         //9th row
         c.gridwidth = 1;
@@ -278,7 +293,7 @@ public class panel_requisitionslip extends JPanel {
         //12th row
         c.gridy = 11;
         c.gridx = 0;
-        c.gridwidth = 4;
+        c.gridwidth = 5;
         sp = new JScrollPane(tbl_items);
         sp.setPreferredSize(new Dimension(600,250));
         pnl_center.add(sp, c);
@@ -286,13 +301,13 @@ public class panel_requisitionslip extends JPanel {
         //13th row
         c.gridy = 12;
         c.gridx = 3;
-        c.gridwidth = 1;
+        c.gridwidth = 2;
         pnl_center.add(lbl_prepared, c);
 
         //14th row
         c.gridy = 13;
         c.gridx = 2;
-        c.gridwidth = 2;
+        c.gridwidth = 3;
         pnl_center.add(btn_submit, c);
 
         listselectionmodel = tbl_items.getSelectionModel();
@@ -351,6 +366,7 @@ public class panel_requisitionslip extends JPanel {
                 text_description.setText("");
                 text_enduser.setText("");
                 combo_category.setSelectedIndex(0);
+                btn_addstock.setEnabled(false);
             }
 
             if (source == btn_delete){
@@ -413,9 +429,44 @@ public class panel_requisitionslip extends JPanel {
                 {
                     JOptionPane.showMessageDialog(pnl_center, "Error, no items entered!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            }
 
+            if (source == btn_search)
+            {
+                dialog_searchitem si = null;
+                try {
+                    si = new dialog_searchitem();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                si.setSize(new Dimension(500,500));
+                si.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        if (text_description.getText().equals(""))
+                            btn_addstock.setEnabled(true);
+                        else
+                            btn_addstock.setEnabled(false);
+                    }
+                });
+                si.setLocationRelativeTo(null);
+                si.setModal(true);
+                si.setVisible(true);
+            }
+
+            if (source == btn_addstock)
+            {
+                dialog_additem ai = null;
+                try {
+                    ai = new dialog_additem();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                ai.setSize(new Dimension(450,200));
+                ai.setLocationRelativeTo(null);
+                ai.setModal(true);
+                ai.setVisible(true);
             }
         }
     }
-
 }

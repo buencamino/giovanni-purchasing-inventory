@@ -56,22 +56,27 @@ public class dbconnect {
 
             pstatement.executeUpdate();
 
+            statement = conn.createStatement();
+            rset = statement.executeQuery("SELECT * FROM tbl_requisition ORDER BY requisition_num DESC LIMIT 1");
+
+            while (rset.next())
+            {
+                buffid = String.valueOf(rset.getInt("requisition_num"));
+            }
+
             for(int i = 0; i < data.size(); i++)
             {
-                statement = conn.createStatement();
-                rset = statement.executeQuery("SELECT * FROM tbl_requisition ORDER BY requisition_num DESC LIMIT 1");
-
-                while (rset.next())
-                {
-                    buffid = String.valueOf(rset.getInt("requisition_num"));
-                }
-
                 pstatement = conn.prepareStatement("insert into tbl_requisitionitems (requisition_num, quantity, units, description, enduser, category) values ('" + buffid + "', ?, ?, ?, ?, ?)");
                 pstatement.setString(1, data.get(i).get(0).toString());
                 pstatement.setString(2, data.get(i).get(1).toString());
                 pstatement.setString(3, data.get(i).get(2).toString());
                 pstatement.setString(4, data.get(i).get(3).toString());
                 pstatement.setString(5, data.get(i).get(4).toString());
+
+                pstatement.executeUpdate();
+
+                pstatement = conn.prepareStatement("update tbl_stockcard set requisition_num = ? where description = '" + data.get(i).get(2).toString() + "' && permanent = 0");
+                pstatement.setString(1, buffid);
 
                 pstatement.executeUpdate();
             }
@@ -515,6 +520,78 @@ public class dbconnect {
         {
             throw e;
         }
+    }
+
+    public ResultSet getStocklist () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select description from tbl_stockcard");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getStocksearch (String description) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select description from tbl_stockcard where description like '%" + description + "%'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public boolean checkDuplicateitem (String description) throws Exception
+    {
+        rset = null;
+        int i = 0;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_stockcard where description = '" + description + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        while (rset.next())
+        {
+            i++;
+        }
+
+        if (i > 0)
+            return false;
+        else if (i == 0)
+            return true;
+        return false;
+    }
+
+    public void addStock (String description) throws Exception
+    {
+        connect();
+        PreparedStatement pstatement = conn.prepareStatement("insert into tbl_stockcard (description, permanent) values (?, 0)");
+        pstatement.setString(1, description);
+
+        pstatement.executeUpdate();
+        pstatement.close();
     }
 
     public void close() throws Exception

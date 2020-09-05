@@ -21,6 +21,7 @@ public class dialog_searchitem extends JDialog {
     DefaultTableModel tablemodel;
     ListSelectionModel listselectionmodel;
     String buff_description;
+    ResultSet rset;
 
     public dialog_searchitem() throws Exception {
         setLayout(new GridBagLayout());
@@ -46,6 +47,19 @@ public class dialog_searchitem extends JDialog {
                     e.consume();
             }
         });
+
+        dbconnect conn = new dbconnect();
+
+        try
+        {
+            rset = conn.getStocklist();
+            refreshTable(rset);
+            conn.close();
+        }
+        catch (Exception j)
+        {
+            throw j;
+        }
 
         tbl_stocks = new JTable(tablemodel);
         sp = new JScrollPane(tbl_stocks);
@@ -92,15 +106,12 @@ public class dialog_searchitem extends JDialog {
 
                 ResultSet rset3 = null;
 
-                if (!(text_search.getText().equals("")))
-                {
-                    try {
-                        rset3 = conn.getStocksearch(text_search.getText());
-                        refreshTable(rset3);
-                        conn.close();
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
+                try {
+                    rset3 = conn.getStocksearch(text_search.getText());
+                    refreshTable(rset3);
+                    conn.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
             }
 

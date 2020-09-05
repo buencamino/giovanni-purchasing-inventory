@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class panel_home_viewpo extends JPanel {
     JLabel lbl_title;
-    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled, btn_generate;
+    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled, btn_generate, btn_generatevoucher;
     DefaultTableModel tablemodel;
     Vector<String> headers = new Vector<String>();
     ResultSet rset;
@@ -39,6 +39,7 @@ public class panel_home_viewpo extends JPanel {
 
         btn_approved = new JButton("Approved by Management");
         btn_cancelled = new JButton("Cancelled/Disapproved");
+        btn_generatevoucher = new JButton("Generate Voucher");
         /*
         btn_generate1.setEnabled(false);
         btn_generate2.setEnabled(false);
@@ -47,6 +48,7 @@ public class panel_home_viewpo extends JPanel {
 
         btn_approved.setEnabled(false);
         btn_cancelled.setEnabled(false);
+        btn_generatevoucher.setEnabled(false);
         /*
         btn_generate1.addActionListener(control);
 
@@ -58,13 +60,14 @@ public class panel_home_viewpo extends JPanel {
         btn_generate = new JButton("Generate PO");
         btn_generate.setEnabled(false);
         btn_generate.addActionListener(control);
-
+        btn_generatevoucher.addActionListener(control);
 
         tablemodel = new DefaultTableModel();
         headers.add("PO #");
         headers.add("Prepared By");
         headers.add("Date");
         headers.add("Project Name");
+        headers.add("Status");
 
         dbconnect conn = new dbconnect();
 
@@ -80,6 +83,7 @@ public class panel_home_viewpo extends JPanel {
         }
 
         tbl_records = new JTable(tablemodel);
+        tbl_records.setDefaultEditor(Object.class, null);
         sp = new JScrollPane(tbl_records);
         sp.setPreferredSize(new Dimension(800,300));
 
@@ -125,6 +129,12 @@ public class panel_home_viewpo extends JPanel {
 
         c.gridx = 1;
         add(btn_cancelled, c);
+
+        //5th row
+        c.gridx = 0;
+        c.gridy = 4;
+        add(btn_generatevoucher, c);
+
     }
 
     class selectionHandler implements ListSelectionListener
@@ -142,7 +152,7 @@ public class panel_home_viewpo extends JPanel {
                 int minIndex = lsm.getMinSelectionIndex();
                 int maxIndex = lsm.getMaxSelectionIndex();
 
-                Object x;
+                Object x, y;
 
                 x = tbl_records.getValueAt(maxIndex, 0);
                 buff_poid = x.toString();
@@ -150,6 +160,15 @@ public class panel_home_viewpo extends JPanel {
                 //btn_generate2.setEnabled(true);
                 //btn_generate3.setEnabled(true);
                 btn_approved.setEnabled(true);
+
+                y = tbl_records.getValueAt(maxIndex, 4);
+                if (y.toString().equals("Pending"))
+                    btn_generatevoucher.setEnabled(false);
+                else if (y.toString().equals("Approved"))
+                    btn_generatevoucher.setEnabled(true);
+                else if (y.toString().equals("Cancelled"))
+                    btn_generatevoucher.setEnabled(false);
+
             }
         }
     }
@@ -166,6 +185,12 @@ public class panel_home_viewpo extends JPanel {
             record.add(rset1.getString("preparedby"));
             record.add(rset1.getString("date"));
             record.add(rset1.getString("projectname"));
+            if (rset1.getInt("approved") == 0)
+                record.add("Pending");
+            else if (rset1.getInt("approved") == 1)
+                record.add("Approved");
+            else if (rset1.getInt("approved") == 2)
+                record.add("Cancelled");
 
             data.addElement(record);
         }
@@ -306,6 +331,69 @@ public class panel_home_viewpo extends JPanel {
 
                 mainFrame.pnl_center.repaint();
                 mainFrame.pnl_center.revalidate();
+            }
+
+            if (source == btn_approved)
+            {
+                dbconnect conn = new dbconnect();
+
+                try {
+                    conn.setApprovepo(buff_poid);
+                    conn.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                dbconnect conn2 = new dbconnect();
+
+                try
+                {
+                    rset = conn2.getPurchaseorder();
+                    refreshTable(rset);
+                    conn2.close();
+                }
+                catch (Exception j)
+                {
+                    System.out.println(j.getMessage());
+                }
+
+                btn_generatevoucher.setEnabled(true);
+            }
+
+            if (source == btn_generatevoucher)
+            {
+                dbconnect conn = new dbconnect();
+                String type = null;
+
+                try {
+                    type = conn.checkVouchertype(buff_poid);
+                    conn.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                if (type.equals("Check"))
+                {
+                    mainFrame.pnl_center.removeAll();
+                    mainFrame.pnl_center.repaint();
+                    mainFrame.pnl_center.revalidate();
+
+                    mainFrame.pnl_center.add(new panel_home_viewcheckvoucher(buff_poid), BorderLayout.CENTER);
+
+                    mainFrame.pnl_center.repaint();
+                    mainFrame.pnl_center.revalidate();
+                }
+                else if (type.equals("Cash"))
+                {
+                    mainFrame.pnl_center.removeAll();
+                    mainFrame.pnl_center.repaint();
+                    mainFrame.pnl_center.revalidate();
+
+                    mainFrame.pnl_center.add(new panel_home_viewcashvoucher(buff_poid), BorderLayout.CENTER);
+
+                    mainFrame.pnl_center.repaint();
+                    mainFrame.pnl_center.revalidate();
+                }
             }
         }
     }

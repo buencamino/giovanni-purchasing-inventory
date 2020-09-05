@@ -512,13 +512,15 @@ public class dbconnect {
         }
     }
 
-    public void addSupplier(String suppliername) throws Exception
+    public void addSupplier(String suppliername, String accountname, String accountnum) throws Exception
     {
         try
         {
             connect();
-            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_supplier (suppliername) values (?)");
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_supplier (suppliername, accountname, accountnum) values (?, ?, ?)");
             pstatement.setString(1, suppliername);
+            pstatement.setString(2, accountname);
+            pstatement.setString(3, accountnum);
 
             pstatement.executeUpdate();
 
@@ -601,6 +603,74 @@ public class dbconnect {
 
         pstatement.executeUpdate();
         pstatement.close();
+    }
+
+    public void setApprovepo(String poid) throws Exception
+    {
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            statement.executeUpdate("update tbl_purchaseorder set approved = 1 where purchaseorder_id = " + poid);
+        }
+        catch (Exception x)
+        {
+            throw x;
+        }
+    }
+
+    public String checkVouchertype (String poid) throws Exception
+    {
+        int canvassid = 0;
+        int supplierchosen = 0;
+        String terms = null;
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select canvass_id, supplierchosen from tbl_purchaseorder where purchaseorder_id = " + poid);
+
+            while (rset.next())
+            {
+                canvassid = rset.getInt("canvass_id");
+                supplierchosen = rset.getInt("supplierchosen");
+            }
+
+            rset = null;
+
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select terms" + supplierchosen + " from tbl_canvass where canvass_id = " + canvassid);
+
+            while (rset.next())
+            {
+                terms = rset.getString("terms" + supplierchosen);
+            }
+
+            return terms;
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+
+    public ResultSet getSupplierinfo (String suppliername) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select accountname, accountnum from tbl_supplier where suppliername = '" + suppliername + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
     }
 
     public void close() throws Exception

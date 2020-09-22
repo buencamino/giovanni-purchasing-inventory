@@ -20,7 +20,7 @@ public class dialog_searchitem extends JDialog {
     Vector<Object> record;
     DefaultTableModel tablemodel;
     ListSelectionModel listselectionmodel;
-    String buff_description;
+    String buff_description, buff_stockid;
     ResultSet rset;
 
     public dialog_searchitem() throws Exception {
@@ -31,6 +31,7 @@ public class dialog_searchitem extends JDialog {
         selectionHandler handler = new selectionHandler();
 
         tablemodel = new DefaultTableModel();
+        headers.add("Stock ID");
         headers.add("Stock Name");
 
         text_search = new JTextField(25);
@@ -117,6 +118,7 @@ public class dialog_searchitem extends JDialog {
 
             if (source == btn_select) {
                 panel_requisitionslip.text_description.setText(buff_description);
+                panel_requisitionslip.stockid = buff_stockid;
                 dispose();
             }
         }
@@ -130,6 +132,7 @@ public class dialog_searchitem extends JDialog {
         {
             record = new Vector<Object>();
 
+            record.add(rset1.getString("stock_id"));
             record.add(rset1.getString("description"));
 
             data.addElement(record);
@@ -154,10 +157,13 @@ public class dialog_searchitem extends JDialog {
                 int minIndex = lsm.getMinSelectionIndex();
                 int maxIndex = lsm.getMaxSelectionIndex();
 
-                Object x;
+                Object x, y;
 
-                x = tbl_stocks.getValueAt(maxIndex, 0);
+                x = tbl_stocks.getValueAt(maxIndex, 1);
                 buff_description = x.toString();
+
+                y = tbl_stocks.getValueAt(maxIndex, 0);
+                buff_stockid = y.toString();
                 btn_select.setEnabled(true);
             }
         }

@@ -20,7 +20,7 @@ public class panel_repeatpo extends JPanel {
     Vector<Vector<Object>> data;
     Vector<Object> record;
     ListSelectionModel listselectionmodel;
-    String buff_poid;
+    String buff_poid, suppliername;
 
     public panel_repeatpo() throws Exception {
         setLayout(new GridBagLayout());
@@ -129,7 +129,7 @@ public class panel_repeatpo extends JPanel {
                 mainFrame.pnl_center.revalidate();
 
                 try {
-                    mainFrame.pnl_center.add(new panel_repeatpo2(buff_poid), BorderLayout.CENTER);
+                    mainFrame.pnl_center.add(new panel_repeatpo2(buff_poid, suppliername), BorderLayout.CENTER);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -157,11 +157,14 @@ public class panel_repeatpo extends JPanel {
                 int minIndex = lsm.getMinSelectionIndex();
                 int maxIndex = lsm.getMaxSelectionIndex();
 
-                Object x;
+                Object x, y;
 
                 x = tbl_po.getValueAt(maxIndex, 0);
                 buff_poid = x.toString();
                 btn_next.setEnabled(true);
+
+                y = tbl_po.getValueAt(maxIndex, 3);
+                suppliername = y.toString();
 
                 lbl_items.setText("Items included : ");
 

@@ -67,12 +67,13 @@ public class dbconnect {
 
             for(int i = 0; i < data.size(); i++)
             {
-                pstatement = conn.prepareStatement("insert into tbl_requisitionitems (requisition_num, quantity, units, description, enduser, category) values ('" + buffid + "', ?, ?, ?, ?, ?)");
+                pstatement = conn.prepareStatement("insert into tbl_requisitionitems (requisition_num, quantity, units, description, enduser, category, item_id) values ('" + buffid + "', ?, ?, ?, ?, ?, ?)");
                 pstatement.setString(1, data.get(i).get(0).toString());
                 pstatement.setString(2, data.get(i).get(1).toString());
                 pstatement.setString(3, data.get(i).get(2).toString());
                 pstatement.setString(4, data.get(i).get(3).toString());
                 pstatement.setString(5, data.get(i).get(4).toString());
+                pstatement.setString(6, data.get(i).get(5).toString());
 
                 pstatement.executeUpdate();
 
@@ -543,7 +544,7 @@ public class dbconnect {
         {
             connect();
             statement = conn.createStatement();
-            rset = statement.executeQuery("select description from tbl_stockcard");
+            rset = statement.executeQuery("select * from tbl_stockcard");
         }
         catch (Exception e)
         {
@@ -910,6 +911,76 @@ public class dbconnect {
 
         return rset;
     }
+
+    public void addRepeatpo(String poid, Vector<Vector<Object>> data, String fullname, String date, String time, String suppliername) throws Exception {
+        String buffid = null;
+        String projectname = null, canvassid = null, supplierchosen = null;
+
+        try
+        {
+            connect();
+
+            rset = null;
+
+            rset = getPurchaseorderinfo(poid);
+
+            rset.first();
+            projectname = rset.getString("projectname");
+            canvassid = rset.getString("canvass_id");
+            supplierchosen = rset.getString("supplierchosen");
+
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_purchaseorder (canvass_id, preparedby, date, projectname, supplierchosen, time, approved, bankchosen) values (?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?, " + supplierchosen + ", ?, 0, 0)");
+            pstatement.setString(1, canvassid);
+            pstatement.setString(2, fullname);
+            pstatement.setString(3, projectname);
+            pstatement.setString(4, time);
+
+            pstatement.executeUpdate();
+
+            rset = null;
+
+            statement = conn.createStatement();
+            rset = statement.executeQuery("SELECT * FROM tbl_purchaseorder ORDER BY purchaseorder_id DESC LIMIT 1");
+
+            while (rset.next())
+            {
+                buffid = String.valueOf(rset.getInt("purchaseorder_id"));
+            }
+
+            rset = null;
+
+            for(int i = 0; i < data.size(); i++)
+            {
+                pstatement = conn.prepareStatement("insert into tbl_purchaseorderitems (purchaseorder_id, item_id, quantity, unit, description, unitprice, amount, supplierchosen, suppliername) values ('" + buffid + "', ?, ?, ?, ?, ?, ?, ?, ?)");
+                //item id
+                pstatement.setString(1, data.get(i).get(0).toString());
+                //quantity
+                pstatement.setString(2, data.get(i).get(4).toString());
+                //unit
+                pstatement.setString(3, data.get(i).get(2).toString());
+                //description
+                pstatement.setString(4, data.get(i).get(1).toString());
+                //unitprice
+                pstatement.setString(5, data.get(i).get(3).toString());
+                //amount
+                pstatement.setString(6, data.get(i).get(5).toString());
+                //supplierchosen
+                pstatement.setString(7, supplierchosen);
+                //suppliername
+                pstatement.setString(8, suppliername);
+
+                pstatement.executeUpdate();
+            }
+            statement.close();
+            pstatement.close();
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+
 
     public void close() throws Exception
     {

@@ -29,6 +29,7 @@ public class panel_requisitionslip extends JPanel {
     int buffindex;
     JComboBox combo_category, combo_project, combo_delivery, combo_unit;
     String datenow, time;
+    public static String stockid;
     ResultSet rset;
     int selectedproject;
 
@@ -51,6 +52,7 @@ public class panel_requisitionslip extends JPanel {
         headers.add("Description");
         headers.add("End User");
         headers.add("Category");
+        headers.add("Stock ID");
 
         String[] categories = {"Construction Materials", "Office Supplies", "Spare Parts", "Equipment/Tools", "Fuel/Oil/Lubricants", "Meals", "Computer/I.T Supplies", "Insurance", "Medicines", "Fares", "Remmittance/Charges", "Accomodations/Hotels", "S.O.P/Solicitation", "Labor/Service Charges", "Document Solutions", "Cellphone Loads", "Freight And Handling", "Penalty Charges"};
         combo_category = new JComboBox(categories);
@@ -342,7 +344,7 @@ public class panel_requisitionslip extends JPanel {
         }
     }
 
-    public void refreshVector(String quantity, String units, String description, String enduser, String category)
+    public void refreshVector(String quantity, String units, String description, String enduser, String category, String stockid)
     {
         vec = new Vector<Object>();
         vec.add(quantity);
@@ -350,6 +352,7 @@ public class panel_requisitionslip extends JPanel {
         vec.add(description);
         vec.add(enduser);
         vec.add(category);
+        vec.add(stockid);
 
         data.addElement(vec);
 
@@ -363,7 +366,7 @@ public class panel_requisitionslip extends JPanel {
 
             if (source == btn_additem) {
                 if ((!(text_quantity.getText().equals(""))) && (!(text_description.getText().equals(""))))
-                    refreshVector(text_quantity.getText(), (String) combo_unit.getSelectedItem(), text_description.getText(), text_enduser.getText(), (String) combo_category.getSelectedItem());
+                    refreshVector(text_quantity.getText(), (String) combo_unit.getSelectedItem(), text_description.getText(), text_enduser.getText(), (String) combo_category.getSelectedItem(), stockid);
 
                 text_quantity.setText("");
                 combo_unit.setSelectedIndex(0);

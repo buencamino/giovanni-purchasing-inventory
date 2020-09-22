@@ -22,6 +22,7 @@
 	<parameter name="purchaseordernum" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
 	<parameter name="preparedby" class="java.lang.String"/>
+	<parameter name="time" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -131,6 +132,18 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="default" x="284" y="109" width="66" height="14" uuid="c1fd8c2b-f37f-429d-829e-b5eec33618a2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[Time         :]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="default" x="350" y="109" width="100" height="14" uuid="7dcb0a00-aa7e-4076-8874-f1d7a5ce7d69">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{time}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

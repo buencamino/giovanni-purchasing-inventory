@@ -33,6 +33,7 @@ public class panel_home_viewrs1 extends JPanel {
             parameters.put("preparedby", rsetreqinfo.getString("preparedby"));
             parameters.put("deliverytype", rsetreqinfo.getString("deliverytype"));
             parameters.put("purpose", rsetreqinfo.getString("purpose"));
+            parameters.put("time", rsetreqinfo.getString("timenow"));
 
             conn.close();
         } catch (Exception exception) {

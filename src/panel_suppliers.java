@@ -17,7 +17,7 @@ import java.util.Vector;
 public class panel_suppliers extends JPanel {
     DefaultTableModel tablemodel;
     Vector<String> headers = new Vector<String>();
-    ResultSet rset;
+    ResultSet rset, rsetsupplier;
     String buff_supplierid;
     JTable tbl_suppliers;
     JScrollPane sp;
@@ -169,7 +169,7 @@ public class panel_suppliers extends JPanel {
         add(btn_delete, c);
     }
 
-    class HandleControlButton implements ActionListener {
+    class HandleControlButton extends Component implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 
@@ -179,31 +179,50 @@ public class panel_suppliers extends JPanel {
                 {
                     dbconnect conn = new dbconnect();
 
+                    int i = 0;
+
                     try {
-                        conn.addSupplier(text_suppliername.getText(), text_accountname.getText(), text_accountnum.getText());
+                        rsetsupplier = conn.checkDuplicatesupplier(text_suppliername.getText(), text_accountname.getText(), text_accountnum.getText());
+                        while (rsetsupplier.next())
+                            i++;
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
 
-                    text_suppliername.setText("");
+                    if (i == 0) {
+                        try {
+                            conn.addSupplier(text_suppliername.getText(), text_accountname.getText(), text_accountnum.getText());
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
 
-                    dbconnect conn2 = new dbconnect();
+                        text_suppliername.setText("");
+                        text_accountname.setText("");
+                        text_accountnum.setText("");
 
-                    try
-                    {
-                        rset = conn2.getSupplierlist();
-                        refreshTable(rset);
-                        conn2.close();
+
+
+                        dbconnect conn2 = new dbconnect();
+
+                        try
+                        {
+                            rset = conn2.getSupplierlist();
+                            refreshTable(rset);
+                            conn2.close();
+                        }
+                        catch (Exception j)
+                        {
+                            System.out.println(j.getMessage());
+                        }
+
+                        TableColumn a = tbl_suppliers.getColumnModel().getColumn(1);
+                        a.setPreferredWidth(600);
                     }
-                    catch (Exception j)
+                    else if (i > 0)
                     {
-                        System.out.println(j.getMessage());
+                        JOptionPane.showMessageDialog(this, "Supplier and information already exists!", "Duplicate Entry", JOptionPane.ERROR_MESSAGE);
                     }
-
-                    TableColumn a = tbl_suppliers.getColumnModel().getColumn(1);
-                    a.setPreferredWidth(600);
                 }
-
             }
 
             if (source == btn_delete)

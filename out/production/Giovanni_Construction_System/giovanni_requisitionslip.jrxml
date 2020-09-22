@@ -19,6 +19,7 @@
 	<parameter name="conformedby" class="java.lang.String"/>
 	<parameter name="approvedby" class="java.lang.String"/>
 	<parameter name="purpose" class="java.lang.String"/>
+	<parameter name="time" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -31,7 +32,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="155" splitType="Stretch">
+		<band height="156" splitType="Stretch">
 			<image>
 				<reportElement x="54" y="0" width="60" height="62" uuid="c08a4feb-0113-49f4-a50d-22849d5ad56c"/>
 				<imageExpression><![CDATA["logo1.png"]]></imageExpression>
@@ -160,6 +161,23 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				</textElement>
 				<text><![CDATA[Purpose              :]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="309" y="123" width="44" height="14" uuid="602f14a7-abc7-4e61-b8f5-4f37c3e65a4e"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Time   :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="353" y="123" width="97" height="14" uuid="d91107b5-6555-4d0a-9649-92b0e9609c26">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{time}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>

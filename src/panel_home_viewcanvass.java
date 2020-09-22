@@ -30,7 +30,7 @@ public class panel_home_viewcanvass extends JPanel {
         HandleControlButton control = new HandleControlButton();
 
         lbl_title = new JLabel("Available Canvass Sheets");
-        btn_generate = new JButton("Generate Requisition Slip");
+        btn_generate = new JButton("Generate Canvass Sheet");
         btn_generate.setEnabled(false);
         btn_generate.addActionListener(control);
 

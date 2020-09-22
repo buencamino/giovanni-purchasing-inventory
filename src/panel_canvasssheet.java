@@ -38,7 +38,7 @@ public class panel_canvasssheet extends JPanel {
         combo_terms2 = new JComboBox(terms);
         combo_terms3 = new JComboBox(terms);
 
-        String[] reco = {"For refund to FGCR", "For refund to OCR II", "For purchase", "For canvass only"};
+        String[] reco = {"For refund to FGCR", "For refund to OCR II", "For purchase", "For Refund to ORR Jr.", "Refund to Exil Bon Arena"};
         combo_recommendations = new JComboBox(reco);
 
         dbconnect conn2 = new dbconnect();

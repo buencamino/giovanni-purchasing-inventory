@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class panel_home_viewpo extends JPanel {
     JLabel lbl_title;
-    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled, btn_generate, btn_generatevoucher;
+    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled, btn_generate;
     DefaultTableModel tablemodel;
     Vector<String> headers = new Vector<String>();
     ResultSet rset;
@@ -39,7 +39,6 @@ public class panel_home_viewpo extends JPanel {
 
         btn_approved = new JButton("Approved by Management");
         btn_cancelled = new JButton("Cancelled/Disapproved");
-        btn_generatevoucher = new JButton("Generate Voucher");
         /*
         btn_generate1.setEnabled(false);
         btn_generate2.setEnabled(false);
@@ -48,7 +47,6 @@ public class panel_home_viewpo extends JPanel {
 
         btn_approved.setEnabled(false);
         btn_cancelled.setEnabled(false);
-        btn_generatevoucher.setEnabled(false);
         /*
         btn_generate1.addActionListener(control);
 
@@ -60,7 +58,6 @@ public class panel_home_viewpo extends JPanel {
         btn_generate = new JButton("Generate PO");
         btn_generate.setEnabled(false);
         btn_generate.addActionListener(control);
-        btn_generatevoucher.addActionListener(control);
 
         tablemodel = new DefaultTableModel();
         headers.add("PO #");
@@ -130,10 +127,6 @@ public class panel_home_viewpo extends JPanel {
         c.gridx = 1;
         add(btn_cancelled, c);
 
-        //5th row
-        c.gridx = 0;
-        c.gridy = 4;
-        add(btn_generatevoucher, c);
 
     }
 
@@ -162,13 +155,6 @@ public class panel_home_viewpo extends JPanel {
                 btn_approved.setEnabled(true);
 
                 y = tbl_records.getValueAt(maxIndex, 4);
-                if (y.toString().equals("Pending"))
-                    btn_generatevoucher.setEnabled(false);
-                else if (y.toString().equals("Approved"))
-                    btn_generatevoucher.setEnabled(true);
-                else if (y.toString().equals("Cancelled"))
-                    btn_generatevoucher.setEnabled(false);
-
             }
         }
     }
@@ -355,44 +341,6 @@ public class panel_home_viewpo extends JPanel {
                 catch (Exception j)
                 {
                     System.out.println(j.getMessage());
-                }
-
-                btn_generatevoucher.setEnabled(true);
-            }
-
-            if (source == btn_generatevoucher)
-            {
-                dbconnect conn = new dbconnect();
-                String type = null;
-
-                try {
-                    type = conn.checkVouchertype(buff_poid);
-                    conn.close();
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-
-                if (type.equals("Check"))
-                {
-                    mainFrame.pnl_center.removeAll();
-                    mainFrame.pnl_center.repaint();
-                    mainFrame.pnl_center.revalidate();
-
-                    mainFrame.pnl_center.add(new panel_home_viewcheckvoucher(buff_poid), BorderLayout.CENTER);
-
-                    mainFrame.pnl_center.repaint();
-                    mainFrame.pnl_center.revalidate();
-                }
-                else if (type.equals("Cash"))
-                {
-                    mainFrame.pnl_center.removeAll();
-                    mainFrame.pnl_center.repaint();
-                    mainFrame.pnl_center.revalidate();
-
-                    mainFrame.pnl_center.add(new panel_home_viewcashvoucher(buff_poid), BorderLayout.CENTER);
-
-                    mainFrame.pnl_center.repaint();
-                    mainFrame.pnl_center.revalidate();
                 }
             }
         }

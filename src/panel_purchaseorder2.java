@@ -8,6 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Vector;
 import java.sql.*;
@@ -56,7 +59,7 @@ public class panel_purchaseorder2 extends JPanel {
         lbl_selecteditem = new JLabel("No item selected");
         btn_update = new JButton("Update Item");
         btn_update.addActionListener(control);
-        btn_submit = new JButton("Submit and Complete Purchase Order");
+        btn_submit = new JButton("Confirm Purchase Order");
         btn_submit.addActionListener(control);
         btn_submit.setEnabled(false);
 
@@ -531,8 +534,11 @@ public class panel_purchaseorder2 extends JPanel {
 
                 if (withchosen)
                 {
+                    String time;
+                    time = LocalTime.now().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_TIME);
+
                     try {
-                        conn.addPurchaseorder(canvassid, form_login.fullname, suppliera, supplierb, supplierc, data, datenow, supplierchosen);
+                        conn.addPurchaseorder(canvassid, form_login.fullname, suppliera, supplierb, supplierc, data, datenow, supplierchosen, time);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
@@ -550,7 +556,7 @@ public class panel_purchaseorder2 extends JPanel {
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(this, "One of the items has not been chosen a supplier! Please complete the information before submitting.", "Incomplete Information", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Please choose a supplier before submitting!", "Incomplete Information", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

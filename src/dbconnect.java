@@ -41,18 +41,19 @@ public class dbconnect {
         return rset;
     }
 
-    public void addRequisitionslip (String project, String location, String fullname, String date, Vector<Vector<Object>> data, String purpose, String deliverytype) throws Exception {
+    public void addRequisitionslip (String project, String location, String fullname, String date, Vector<Vector<Object>> data, String purpose, String deliverytype, String time) throws Exception {
         String buffid = null;
 
         try
         {
             connect();
-            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_requisition (project, location, purpose, preparedby, date, deliverytype) values (?, ?, ?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?)");
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_requisition (project, location, purpose, preparedby, date, deliverytype, time) values (?, ?, ?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?, ?)");
             pstatement.setString(1, project);
             pstatement.setString(2, location);
             pstatement.setString(3, purpose);
             pstatement.setString(4, fullname);
             pstatement.setString(5, deliverytype);
+            pstatement.setString(6, time);
 
             pstatement.executeUpdate();
 
@@ -131,7 +132,7 @@ public class dbconnect {
         {
             connect();
             statement = conn.createStatement();
-            rset = statement.executeQuery("select *, date_format(date, '%m-%d-%Y') as newdate from tbl_requisition where requisition_num = " + reqid);
+            rset = statement.executeQuery("select *, date_format(date, '%m-%d-%Y') as newdate, TIME_FORMAT(time, '%h:%i %p') as timenow from tbl_requisition where requisition_num = " + reqid);
         }
         catch (Exception e)
         {
@@ -209,13 +210,13 @@ public class dbconnect {
         }
     }
 
-    public void addCanvasssheet(String reqnum, String supplier1, String supplier2, String supplier3, String terms1, String terms2, String terms3, Vector<Vector<Object>> data, String canvassedby, String recommendations) throws Exception {
+    public void addCanvasssheet(String reqnum, String supplier1, String supplier2, String supplier3, String terms1, String terms2, String terms3, Vector<Vector<Object>> data, String canvassedby, String recommendations, String time, String datenow) throws Exception {
         String buffid = null;
 
         try
         {
             connect();
-            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_canvass (requisition_num, supplier1, supplier2, supplier3, terms1, terms2, terms3, canvassedby, recommendations) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_canvass (requisition_num, supplier1, supplier2, supplier3, terms1, terms2, terms3, canvassedby, recommendations, time, date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, str_to_date('" + datenow + "', '%m/%d/%Y'))");
             pstatement.setString(1, reqnum);
             pstatement.setString(2, supplier1);
             pstatement.setString(3, supplier2);
@@ -225,6 +226,7 @@ public class dbconnect {
             pstatement.setString(7, terms3);
             pstatement.setString(8, canvassedby);
             pstatement.setString(9, recommendations);
+            pstatement.setString(10, time);
 
             pstatement.executeUpdate();
 
@@ -312,7 +314,7 @@ public class dbconnect {
         return rset;
     }
 
-    public void addPurchaseorder(String canvassnum, String preparedby, String supplier1, String supplier2, String supplier3, Vector<Vector<Object>> data, String date, int supplierchosen) throws Exception {
+    public void addPurchaseorder(String canvassnum, String preparedby, String supplier1, String supplier2, String supplier3, Vector<Vector<Object>> data, String date, int supplierchosen, String time) throws Exception {
         String buffid = null;
         String projectname = null, rsnum = null;
 
@@ -338,10 +340,11 @@ public class dbconnect {
                 projectname = rset.getString("project");
             }
 
-            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_purchaseorder (canvass_id, preparedby, date, projectname, supplierchosen) values (?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?, " + supplierchosen + ")");
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_purchaseorder (canvass_id, preparedby, date, projectname, supplierchosen, time) values (?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?, " + supplierchosen + ", ?)");
             pstatement.setString(1, canvassnum);
             pstatement.setString(2, preparedby);
             pstatement.setString(3, projectname);
+            pstatement.setString(4, time);
 
             pstatement.executeUpdate();
 
@@ -428,7 +431,7 @@ public class dbconnect {
         {
             connect();
             statement = conn.createStatement();
-            rset = statement.executeQuery("select * from tbl_purchaseorder");
+            rset = statement.executeQuery("select *, TIME_FORMAT(time, '%h:%i %p') as timerecorded, date_format(date, '%m/%d/%Y') as newdate from tbl_purchaseorder");
         }
         catch (Exception e)
         {
@@ -445,7 +448,7 @@ public class dbconnect {
         {
             connect();
             statement = conn.createStatement();
-            rset = statement.executeQuery("select *, date_format(date, '%m-%d-%Y') as newdate from tbl_purchaseorder where purchaseorder_id = " + purchaseid);
+            rset = statement.executeQuery("select *, date_format(date, '%m-%d-%Y') as newdate, TIME_FORMAT(time, '%h:%i %p') as timerecorded from tbl_purchaseorder where purchaseorder_id = " + purchaseid);
         }
         catch (Exception e)
         {
@@ -664,6 +667,241 @@ public class dbconnect {
             connect();
             statement = conn.createStatement();
             rset = statement.executeQuery("select accountname, accountnum from tbl_supplier where suppliername = '" + suppliername + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public String getSuppliername (String supplierchosen, String canvassid) throws Exception{
+        rset = null;
+        String suppliername;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select supplier" + supplierchosen + " from tbl_canvass where canvass_id = " + canvassid);
+            rset.first();
+            suppliername = rset.getString("supplier" +supplierchosen);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return suppliername;
+    }
+
+    public void addVouchercheck (String poid, String date, String suppliername, String accountname, String accountnum, String time) throws Exception
+    {
+        connect();
+        PreparedStatement pstatement = conn.prepareStatement("insert into tbl_vouchercheck (purchaseorder_id, suppliername, accountname, accountnum, date, time) values (?, ?, ?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?)");
+        pstatement.setInt(1, Integer.parseInt(poid));
+        pstatement.setString(2, suppliername);
+        pstatement.setString(3, accountname);
+        pstatement.setString(4, accountnum);
+        pstatement.setString(5, time);
+
+        pstatement.executeUpdate();
+        pstatement.close();
+    }
+
+    public ResultSet checkDuplicatevouchercheck (String poid) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_vouchercheck where purchaseorder_id = '" + poid + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getBanklist () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_bank");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public void addBank(String bankname, String accountname, String accountnum) throws Exception
+    {
+        try
+        {
+            connect();
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_bank (bankname, accountname, accountnum) values (?, ?, ?)");
+            pstatement.setString(1, bankname);
+            pstatement.setString(2, accountname);
+            pstatement.setString(3, accountnum);
+
+            pstatement.executeUpdate();
+
+            pstatement.close();
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+
+    public void updatePobank(String bankid, String poid) throws Exception
+    {
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            statement.executeUpdate("update tbl_purchaseorder set bankchosen = " + bankid + " where purchaseorder_id = " + poid);
+        }
+        catch (Exception x)
+        {
+            throw x;
+        }
+    }
+
+    public ResultSet getBankinfo (String bankid) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_bank where bank_id = " + bankid);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getSum (String poid) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select sum(amount) as sum from tbl_purchaseorderitems where purchaseorder_id = " + poid);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet checkDuplicatevouchercash (String poid) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_vouchercash where purchaseorder_id = '" + poid + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public void addVouchercash (String poid, String date, String suppliername, String project, String preparedby, String time) throws Exception
+    {
+        connect();
+        PreparedStatement pstatement = conn.prepareStatement("insert into tbl_vouchercash (purchaseorder_id, suppliername, project, preparedby, date, time) values (?, ?, ?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?)");
+        pstatement.setInt(1, Integer.parseInt(poid));
+        pstatement.setString(2, suppliername);
+        pstatement.setString(3, project);
+        pstatement.setString(4, preparedby);
+        pstatement.setString(5, time);
+
+        pstatement.executeUpdate();
+        pstatement.close();
+    }
+
+    public ResultSet getProject (String poid) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_purchaseorder where purchaseorder_id = " + poid);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet checkDuplicatesupplier (String suppliername, String accountname, String accountnum) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_supplier where suppliername = '" + suppliername + "' && accountname = '" + accountname + "' && accountnum = '" + accountnum + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet checkDuplicateproject (String projectname, String location, String ntpdate) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_project where project_name = '" + projectname + "' && location = '" + location + "' && ntpdate = str_to_date('" + ntpdate + "', '%m/%d/%Y')");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+    public ResultSet checkDuplicatebank (String bankname, String accountname, String accountnum) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_bank where bankname = '" + bankname + "' && accountname = '" + accountname + "' && accountnum = '" + accountnum + "'");
         }
         catch (Exception e)
         {

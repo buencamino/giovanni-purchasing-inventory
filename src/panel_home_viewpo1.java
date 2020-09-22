@@ -70,6 +70,7 @@ public class panel_home_viewpo1 extends JPanel {
                 parameters.put("purchaseordernum", rsetpurchaseinfo.getString("purchaseorder_id"));
                 parameters.put("date", rsetpurchaseinfo.getString("newdate"));
                 parameters.put("preparedby", rsetpurchaseinfo.getString("preparedby"));
+                parameters.put("time", rsetpurchaseinfo.getString("timerecorded"));
 
                 conn.close();
 

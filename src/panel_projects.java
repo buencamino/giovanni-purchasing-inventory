@@ -21,11 +21,11 @@ public class panel_projects extends JPanel {
     JScrollPane sp;
     ListSelectionModel listselectionmodel;
     DefaultTableModel tablemodel;
-    Vector<String> headers = new Vector<String>();
     Vector<Vector<Object>> data;
     Vector<Object> record;
-    ResultSet rset;
+    ResultSet rset, rsetprojects;
     String buff_projectid;
+    Vector<String> headers = new Vector<String>();
 
     public panel_projects() throws Exception {
         setLayout(new GridBagLayout());
@@ -176,7 +176,7 @@ public class panel_projects extends JPanel {
 
     }
 
-    class HandleControlButton implements ActionListener {
+    class HandleControlButton extends Component implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 
@@ -186,33 +186,49 @@ public class panel_projects extends JPanel {
                 {
                     dbconnect conn = new dbconnect();
 
+                    int i = 0;
+
                     try {
-                        conn.addProject(text_projectname.getText(), text_location.getText(), text_ntpdate.getText());
+                        rsetprojects = conn.checkDuplicateproject(text_projectname.getText(), text_location.getText(), text_ntpdate.getText());
+                        while (rsetprojects.next())
+                            i++;
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
 
-                    text_projectname.setText("");
-                    text_location.setText("");
-                    text_ntpdate.setText("");
-
-                    dbconnect conn2 = new dbconnect();
-
-                    try
+                    if (i == 0)
                     {
-                        rset = conn2.getProjectlist();
-                        refreshTable(rset);
-                        conn2.close();
-                    }
-                    catch (Exception j)
-                    {
-                        System.out.println(j.getMessage());
-                    }
+                        try {
+                            conn.addProject(text_projectname.getText(), text_location.getText(), text_ntpdate.getText());
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
 
-                    TableColumn a = tbl_projects.getColumnModel().getColumn(1);
-                    a.setPreferredWidth(500);
+                        text_projectname.setText("");
+                        text_location.setText("");
+                        text_ntpdate.setText("");
+
+                        dbconnect conn2 = new dbconnect();
+
+                        try
+                        {
+                            rset = conn2.getProjectlist();
+                            refreshTable(rset);
+                            conn2.close();
+                        }
+                        catch (Exception j)
+                        {
+                            System.out.println(j.getMessage());
+                        }
+
+                        TableColumn a = tbl_projects.getColumnModel().getColumn(1);
+                        a.setPreferredWidth(500);
+                    }
+                    else if (i > 0)
+                    {
+                        JOptionPane.showMessageDialog(this, "Project and information already exists!", "Duplicate Entry", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-
             }
 
             if (source == btn_delete)

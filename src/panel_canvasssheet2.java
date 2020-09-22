@@ -10,6 +10,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Vector;
 
 public class panel_canvasssheet2 extends JPanel {
@@ -28,7 +34,7 @@ public class panel_canvasssheet2 extends JPanel {
     ResultSet rset;
     ListSelectionModel listselectionmodel;
     Integer i;
-    String suppliera, supplierb, supplierc, termsa, termsb, termsc, reqnum, reco;
+    String suppliera, supplierb, supplierc, termsa, termsb, termsc, reqnum, reco, time, datenow;
 
     public panel_canvasssheet2(String buff_reqnum, String supplier1, String supplier2, String supplier3, String terms1, String terms2, String terms3, String recommendations) throws Exception {
         setLayout(new GridBagLayout());
@@ -115,6 +121,9 @@ public class panel_canvasssheet2 extends JPanel {
                     y = Double.parseDouble(lbl_quantity1a.getText());
                     total = x * y;
 
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    total = Double.valueOf(df.format(total));
+
                     lbl_amount1a.setText(String.valueOf(total));
                 }
             }
@@ -155,6 +164,9 @@ public class panel_canvasssheet2 extends JPanel {
                     y = Double.parseDouble(lbl_quantity2a.getText());
                     total = x * y;
 
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    total = Double.valueOf(df.format(total));
+
                     lbl_amount2a.setText(String.valueOf(total));
                 }
             }
@@ -194,6 +206,9 @@ public class panel_canvasssheet2 extends JPanel {
                     x = Double.parseDouble(text_unit3.getText());
                     y = Double.parseDouble(lbl_quantity3a.getText());
                     total = x * y;
+
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    total = Double.valueOf(df.format(total));
 
                     lbl_amount3a.setText(String.valueOf(total));
                 }
@@ -478,8 +493,13 @@ public class panel_canvasssheet2 extends JPanel {
             if(source == btn_submit) {
                 dbconnect conn = new dbconnect();
 
+                time = LocalTime.now().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_TIME);
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                Date date = new Date();
+                datenow = formatter.format(date);
+
                 try {
-                    conn.addCanvasssheet(reqnum, suppliera, supplierb, supplierc, termsa, termsb, termsc, data, form_login.fullname, reco);
+                    conn.addCanvasssheet(reqnum, suppliera, supplierb, supplierc, termsa, termsb, termsc, data, form_login.fullname, reco, time, datenow);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

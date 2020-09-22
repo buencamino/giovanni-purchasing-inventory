@@ -49,6 +49,13 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<reportElement x="382" y="-9" width="47" height="58" uuid="fa906fc2-07ec-4f81-81b9-45baa3147718"/>
 				<imageExpression><![CDATA["ajalogo.png"]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="220" y="60" width="125" height="19" uuid="21869373-f067-4e81-a470-52a1cd05c438"/>
+				<textElement>
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANVASS SHEET]]></text>
+			</staticText>
 		</band>
 	</title>
 	<columnHeader>

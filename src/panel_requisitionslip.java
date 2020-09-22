@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Date;
 
@@ -25,9 +28,10 @@ public class panel_requisitionslip extends JPanel {
     ListSelectionModel listselectionmodel;
     int buffindex;
     JComboBox combo_category, combo_project, combo_delivery, combo_unit;
-    String datenow;
+    String datenow, time;
     ResultSet rset;
     int selectedproject;
+
 
     public panel_requisitionslip() throws Exception {
         setLayout(new BorderLayout());
@@ -390,8 +394,10 @@ public class panel_requisitionslip extends JPanel {
 
                 if (data.size() != 0)
                 {
+
+                    time = LocalTime.now().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_TIME);
                     try {
-                        conn.addRequisitionslip((String) combo_project.getSelectedItem(), lbl_locationdata.getText(), form_login.fullname, datenow, data, text_purpose.getText(), (String) combo_delivery.getSelectedItem());
+                        conn.addRequisitionslip((String) combo_project.getSelectedItem(), lbl_locationdata.getText(), form_login.fullname, datenow, data, text_purpose.getText(), (String) combo_delivery.getSelectedItem(), time);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }

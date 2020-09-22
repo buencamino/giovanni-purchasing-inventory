@@ -4,7 +4,12 @@ import net.sf.jasperreports.swing.JRViewer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +18,20 @@ import java.util.Date;
 
 public class panel_home_viewcheckvoucher extends JPanel {
     String suppliername = null;
-    ResultSet rsetpurchaseitems, rsetpurchaseinfo, rsetsupplierinfo;
-    String datenow;
+    ResultSet rsetpurchaseitems, rsetpurchaseinfo, rsetsupplierinfo, rset, rsetbankinfo, rsetsum;
+    String datenow, accountname, accountnum, bankname, bankaccountname, bankaccountnum, s, timenow;
+    int voucherid;
     Date date;
 
-    public panel_home_viewcheckvoucher(String poid)
-    {
+    public panel_home_viewcheckvoucher(String poid) throws Exception {
         setLayout(new BorderLayout());
 
         date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         datenow = formatter.format(date);
+
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm aa");
+        String timenow = dateFormat.format(new Date()).toString();
 
         removeAll();
         repaint();
@@ -63,17 +71,68 @@ public class panel_home_viewcheckvoucher extends JPanel {
         try {
             rsetpurchaseinfo = conn.getPurchaseorderinfo(poid);
             rsetsupplierinfo = conn.getSupplierinfo(suppliername);
+            rsetsum = conn.getSum(poid);
 
             rsetpurchaseinfo.first();
             rsetsupplierinfo.first();
+            rsetsum.first();
+
+            rsetbankinfo = conn.getBankinfo(rsetpurchaseinfo.getString("bankchosen"));
+
+            rsetbankinfo.first();
+
+            Float num = rsetsum.getFloat("sum");
+            int left = (int)Math.floor(num);
+            int right = (int)Math.floor((num-left)*100.0f);
+
+            s = "The amount of " + EnglishNumberToWords.convert(left) + " and " + EnglishNumberToWords.convert(right) + " cents only";
+
+            accountname = rsetsupplierinfo.getString("accountname");
+            accountnum = rsetsupplierinfo.getString("accountnum");
+            bankname = rsetbankinfo.getString("bankname");
+            bankaccountname = rsetbankinfo.getString("accountname");
+            bankaccountnum = rsetbankinfo.getString("accountnum");
+
+            dbconnect conn3 = new dbconnect();
+            int i = 0;
+
+            rset = conn3.checkDuplicatevouchercheck(poid);
+
+            while (rset.next())
+                i++;
+
+            if (i == 0)
+            {
+                String time;
+                time = LocalTime.now().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_TIME);
+
+                conn3.addVouchercheck(poid, datenow, suppliername, accountname, accountnum, time);
+                rset = conn3.checkDuplicatevouchercheck(poid);
+                rset.first();
+                voucherid = rset.getInt("vouchercheck_id");
+            }
+            else if (i > 0)
+            {
+                rset.first();
+                voucherid = rset.getInt("vouchercheck_id");
+            }
+
+            conn3.close();
+
+            parameters.put("voucherid", voucherid);
             parameters.put("date", datenow);
             parameters.put("suppliername", suppliername);
             parameters.put("preparedby", rsetpurchaseinfo.getString("preparedby"));
-            parameters.put("accountname", rsetsupplierinfo.getString("accountname"));
-            parameters.put("accountnum", rsetsupplierinfo.getString("accountnum"));
+            parameters.put("bankname", bankname);
+            parameters.put("bankaccountname", bankaccountname);
+            parameters.put("bankaccountnum", bankaccountnum);
+            parameters.put("accountname", accountname);
+            parameters.put("accountnum", accountnum);
+            parameters.put("ponum", poid);
+            parameters.put("numtowords", s);
+            parameters.put("time", timenow);
 
             conn.close();
-
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -95,6 +154,7 @@ public class panel_home_viewcheckvoucher extends JPanel {
         } catch (JRException jrException) {
             jrException.printStackTrace();
         }
+
 
     }
 }

@@ -69,8 +69,8 @@ public class panel_suppliers extends JPanel {
         lbl_suppliername = new JLabel("Supplier Name :");
         lbl_list = new JLabel("Supplier List");
         lbl_title = new JLabel("Input Supplier Details");
-        lbl_accountname = new JLabel("Bank Account Name :");
-        lbl_accountnum = new JLabel("Bank Account Number :");
+        lbl_accountname = new JLabel("Supplier Bank Account Name :");
+        lbl_accountnum = new JLabel("Supplier Bank Account Number :");
 
         text_suppliername = new JTextField(30);
         text_accountname = new JTextField(40);

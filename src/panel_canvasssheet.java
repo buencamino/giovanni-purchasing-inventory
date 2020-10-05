@@ -235,7 +235,7 @@ public class panel_canvasssheet extends JPanel {
                 else
                     supplier3 = combo_supplier3.getSelectedItem().toString();
 
-                if (!(supplier1.equals("") && supplier2.equals("") && supplier3.equals("")))
+                if (!(supplier1.equals("") || supplier2.equals("") || supplier3.equals("")))
                 {
                     try {
                         removeAll();
@@ -252,7 +252,7 @@ public class panel_canvasssheet extends JPanel {
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(pnl_entry1, "Error, please enter at least one supplier!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(pnl_entry1, "Error, please choose 3 suppliers", "Missing Suppliers", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

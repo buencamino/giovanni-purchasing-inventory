@@ -20,6 +20,7 @@
 	<parameter name="ponum" class="java.lang.String"/>
 	<parameter name="numtowords" class="java.lang.String"/>
 	<parameter name="time" class="java.lang.String"/>
+	<parameter name="checknum" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -32,7 +33,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="128" splitType="Stretch">
+		<band height="133" splitType="Stretch">
 			<image>
 				<reportElement x="117" y="4" width="60" height="62" uuid="059924b8-c31a-4d2e-a393-2da6e83a117c"/>
 				<imageExpression><![CDATA["logo1.png"]]></imageExpression>
@@ -61,13 +62,6 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<text><![CDATA[PAY TO                       :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="220" y="66" width="125" height="25" uuid="0f94d461-01df-4ca2-b265-b53c86a0b3cd"/>
-				<textElement>
-					<font fontName="Arial" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CHECK VOUCHER]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="default" x="-8" y="98" width="125" height="14" uuid="5b1174b6-e7fd-4101-b500-ebb5247e18a3">
@@ -140,16 +134,31 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{time}]]></textFieldExpression>
 			</textField>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="66" width="612" height="17" backcolor="#FFFF00" uuid="2e192f1b-4325-4ba3-ae89-e297d94d96b1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="250" y="0" width="125" height="17" uuid="0f94d461-01df-4ca2-b265-b53c86a0b3cd">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CHECK VOUCHER]]></text>
+				</staticText>
+			</frame>
 		</band>
 	</title>
 	<columnHeader>
 		<band height="14" splitType="Stretch">
 			<frame>
-				<reportElement style="borders" x="-8" y="0" width="436" height="14" uuid="694c9313-571b-4cd2-b9a1-97d6a07f56ec">
+				<reportElement style="borders" x="-8" y="0" width="498" height="14" uuid="694c9313-571b-4cd2-b9a1-97d6a07f56ec">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<staticText>
-					<reportElement style="default" x="168" y="0" width="90" height="14" uuid="7908df85-374a-467e-98ec-357bcb8ce4ba">
+					<reportElement style="default" x="216" y="0" width="90" height="14" uuid="7908df85-374a-467e-98ec-357bcb8ce4ba">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c34d9613-8b30-4556-8088-a015eec0300d"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -158,11 +167,11 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				</staticText>
 			</frame>
 			<frame>
-				<reportElement style="borders" x="428" y="0" width="152" height="14" uuid="b8474c1c-f419-4ef0-a78c-1dc7df06a78a">
+				<reportElement style="borders" x="490" y="0" width="94" height="14" uuid="b8474c1c-f419-4ef0-a78c-1dc7df06a78a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<staticText>
-					<reportElement style="default" x="49" y="0" width="60" height="14" uuid="a54e03ee-e056-4772-84b2-90068cd23f0e">
+					<reportElement style="default" x="20" y="0" width="60" height="14" uuid="a54e03ee-e056-4772-84b2-90068cd23f0e">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5fa2baef-7f3e-49d2-9e19-00d31ae3a73e"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -175,12 +184,12 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<frame>
-				<reportElement style="borders" stretchType="RelativeToBandHeight" x="-8" y="0" width="436" height="14" uuid="9f09ce73-decf-4f34-a901-6b004c42cd07">
+				<reportElement style="borders" stretchType="RelativeToBandHeight" x="-8" y="0" width="498" height="14" uuid="9f09ce73-decf-4f34-a901-6b004c42cd07">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="default" stretchType="RelativeToBandHeight" x="5" y="0" width="425" height="14" uuid="1d568e31-bce9-4b3e-8ef7-34282a1d87ca">
+					<reportElement style="default" stretchType="RelativeToBandHeight" x="5" y="0" width="493" height="14" uuid="1d568e31-bce9-4b3e-8ef7-34282a1d87ca">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c34d9613-8b30-4556-8088-a015eec0300d"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -191,12 +200,12 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement style="borders" stretchType="RelativeToBandHeight" x="428" y="0" width="152" height="14" uuid="90642ea8-f9ae-4472-b27e-f229165d343c">
+				<reportElement style="borders" stretchType="RelativeToBandHeight" x="490" y="0" width="94" height="14" uuid="90642ea8-f9ae-4472-b27e-f229165d343c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="default" stretchType="RelativeToBandHeight" x="5" y="0" width="143" height="14" uuid="50829834-cfb7-447d-a128-6be3bca31db4">
+					<reportElement style="default" stretchType="RelativeToBandHeight" x="2" y="0" width="90" height="14" uuid="50829834-cfb7-447d-a128-6be3bca31db4">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5fa2baef-7f3e-49d2-9e19-00d31ae3a73e"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -352,6 +361,16 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="default" x="273" y="44" width="306" height="30" uuid="e0b3216a-0a0b-4ca0-9f62-924e9811fd25"/>
 				<textFieldExpression><![CDATA[$P{numtowords}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="default" x="-8" y="86" width="124" height="14" uuid="01832f7a-dfb2-4612-af01-fb2fc9002c5a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[Check Number           :]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="default" x="116" y="86" width="144" height="14" uuid="6db6c619-4243-4542-9137-01aed6beb951"/>
+				<textFieldExpression><![CDATA[$P{checknum}]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>

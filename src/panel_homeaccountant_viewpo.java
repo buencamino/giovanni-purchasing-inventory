@@ -6,12 +6,15 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
 public class panel_homeaccountant_viewpo extends JPanel {
-    JLabel lbl_title, lbl_bankname;
+    JLabel lbl_title, lbl_bankname, lbl_checknum;
+    JTextField text_checknum;
     DefaultTableModel tablemodel;
     Vector<String> headers = new Vector<String>();
     ResultSet rset, rsetbanks;
@@ -20,7 +23,7 @@ public class panel_homeaccountant_viewpo extends JPanel {
     JTable tbl_records;
     JScrollPane sp;
     ListSelectionModel listselectionmodel;
-    JButton btn_generatevoucher, btn_generate, btn_updatebank;
+    JButton btn_generatevoucher, btn_generate, btn_updateinfo;
     String buff_poid, selectedterms;
     JPanel pnl_bankdetails;
     JComboBox combo_bankname;
@@ -34,8 +37,22 @@ public class panel_homeaccountant_viewpo extends JPanel {
 
         pnl_bankdetails = new JPanel(new GridBagLayout());
         lbl_bankname = new JLabel("Bank Account Name :");
-        btn_updatebank = new JButton("Update Bank Info");
-        btn_updatebank.addActionListener(control);
+        btn_updateinfo = new JButton("Update Information");
+        btn_updateinfo.addActionListener(control);
+        lbl_checknum = new JLabel("Enter Check Number :");
+        text_checknum = new JTextField(10);
+
+        text_checknum.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!((c >= '0') && (c <= '9') ||
+                        (c == KeyEvent.VK_BACK_SPACE) ||
+                        (c == KeyEvent.VK_DELETE)) || text_checknum.getText().length() >= 30) {
+                    getToolkit().beep();
+                    e.consume();
+                }
+            }
+        });
 
         combo_bankname = new JComboBox();
 
@@ -67,10 +84,20 @@ public class panel_homeaccountant_viewpo extends JPanel {
         pnl_bankdetails.add(combo_bankname, c);
 
         //2nd row
-        c.gridx = 1;
+        c.gridx = 0;
         c.gridy = 1;
         c.anchor = GridBagConstraints.LINE_END;
-        pnl_bankdetails.add(btn_updatebank, c);
+        pnl_bankdetails.add(lbl_checknum, c);
+
+        c.gridx = 1;
+        c.anchor = GridBagConstraints.LINE_START;
+        pnl_bankdetails.add(text_checknum, c);
+
+        //3rd row
+        c.gridx = 1;
+        c.gridy = 2;
+        c.anchor = GridBagConstraints.LINE_END;
+        pnl_bankdetails.add(btn_updateinfo, c);
 
         pnl_bankdetails.setVisible(false);
 
@@ -93,12 +120,13 @@ public class panel_homeaccountant_viewpo extends JPanel {
         headers.add("Status");
         headers.add("Terms");
         headers.add("Bank Chosen");
+        headers.add("Check #");
 
         dbconnect conn = new dbconnect();
 
         try
         {
-            rset = conn.getPurchaseorder();
+            rset = conn.getApprovedpo();
             refreshTable(rset);
         }
         catch (Exception j)
@@ -196,13 +224,14 @@ public class panel_homeaccountant_viewpo extends JPanel {
                 record.add("None");
             }
 
+            record.add(rset1.getString("checknum"));
+
             data.addElement(record);
         }
 
         tablemodel.setDataVector(data, headers);
         tablemodel.fireTableDataChanged();
     }
-
 
     class selectionHandler implements ListSelectionListener
     {
@@ -248,11 +277,7 @@ public class panel_homeaccountant_viewpo extends JPanel {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 
-            if (source == btn_generate) {
-
-            }
-
-            if (source == btn_updatebank) {
+            if (source == btn_updateinfo) {
                 String bankid = null;
                 int selectedbank;
 
@@ -273,7 +298,7 @@ public class panel_homeaccountant_viewpo extends JPanel {
                         count++;
                     } while (rsetbanks.next());
 
-                    conn.updatePobank(bankid, buff_poid);
+                    conn.updatePobank(bankid, buff_poid, text_checknum.getText());
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (Exception exception) {
@@ -302,7 +327,7 @@ public class panel_homeaccountant_viewpo extends JPanel {
                     mainFrame.pnl_center.revalidate();
 
                     try {
-                        mainFrame.pnl_center.add(new panel_home_viewcheckvoucher(buff_poid), BorderLayout.CENTER);
+                        mainFrame.pnl_center.add(new panel_home_viewcheckvoucher(buff_poid, text_checknum.getText()), BorderLayout.CENTER);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }

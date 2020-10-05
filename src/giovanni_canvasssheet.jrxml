@@ -25,7 +25,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="92" splitType="Stretch">
+		<band height="86" splitType="Stretch">
 			<image>
 				<reportElement x="117" y="-13" width="60" height="62" uuid="597bcc15-021e-4b94-a213-fd4a10d3fd05"/>
 				<imageExpression><![CDATA["logo1.png"]]></imageExpression>
@@ -49,13 +49,21 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<reportElement x="382" y="-9" width="47" height="58" uuid="fa906fc2-07ec-4f81-81b9-45baa3147718"/>
 				<imageExpression><![CDATA["ajalogo.png"]]></imageExpression>
 			</image>
-			<staticText>
-				<reportElement x="220" y="60" width="125" height="19" uuid="21869373-f067-4e81-a470-52a1cd05c438"/>
-				<textElement>
-					<font fontName="Arial" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CANVASS SHEET]]></text>
-			</staticText>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="60" width="612" height="17" backcolor="#FFFF00" uuid="b1160758-a18b-4ec6-86d0-ddf8b910ba95">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="240" y="0" width="125" height="17" uuid="21869373-f067-4e81-a470-52a1cd05c438">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CANVASS SHEET]]></text>
+				</staticText>
+			</frame>
 		</band>
 	</title>
 	<columnHeader>

@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class panel_requisitionslip extends JPanel {
     JLabel lbl_prepared, lbl_project, lbl_location, lbl_date, lbl_category, lbl_itemtitle, lbl_quantity, lbl_units, lbl_description, lbl_locationdata, lbl_deliverytype, lbl_purpose, lbl_enduser;
-    JTextField text_purpose, text_enduser;
+    JTextField text_purpose;
     JTextField text_quantity;
     public static JTextField text_description;
     JPanel pnl_center;
@@ -27,12 +27,11 @@ public class panel_requisitionslip extends JPanel {
     Vector<String> headers = new Vector<String>();
     ListSelectionModel listselectionmodel;
     int buffindex;
-    JComboBox combo_category, combo_project, combo_delivery, combo_unit;
+    JComboBox combo_category, combo_project, combo_delivery, combo_unit, combo_enduser;
     String datenow, time;
     public static String stockid;
-    ResultSet rset;
+    ResultSet rset, rset2;
     int selectedproject;
-
 
     public panel_requisitionslip() throws Exception {
         setLayout(new BorderLayout());
@@ -68,6 +67,14 @@ public class panel_requisitionslip extends JPanel {
         while (rset.next())
         {
             combo_project.addItem(rset.getString("project_name"));
+        }
+
+        rset2 = conn2.getEnduserlist();
+        combo_enduser = new JComboBox();
+
+        while (rset2.next())
+        {
+            combo_enduser.addItem(rset2.getString("endusername"));
         }
 
         combo_project.setSelectedIndex(-1);
@@ -117,18 +124,10 @@ public class panel_requisitionslip extends JPanel {
         text_description.setEditable(false);
         text_quantity = new JTextField(10);
         text_purpose = new JTextField(20);
-        text_enduser = new JTextField(20);
 
         text_purpose.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 if (text_purpose.getText().length() >= 100 )
-                    e.consume();
-            }
-        });
-
-        text_enduser.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                if (text_enduser.getText().length() >= 100 )
                     e.consume();
             }
         });
@@ -285,7 +284,7 @@ public class panel_requisitionslip extends JPanel {
         c.gridx = 1;
         c.gridwidth = 2;
         c.anchor = GridBagConstraints.LINE_START;
-        pnl_center.add(text_enduser, c);
+        pnl_center.add(combo_enduser, c);
 
         //11th row
         c.gridwidth = 1;
@@ -366,12 +365,12 @@ public class panel_requisitionslip extends JPanel {
 
             if (source == btn_additem) {
                 if ((!(text_quantity.getText().equals(""))) && (!(text_description.getText().equals(""))))
-                    refreshVector(text_quantity.getText(), (String) combo_unit.getSelectedItem(), text_description.getText(), text_enduser.getText(), (String) combo_category.getSelectedItem(), stockid);
+                    refreshVector(text_quantity.getText(), (String) combo_unit.getSelectedItem(), text_description.getText(), combo_enduser.getSelectedItem().toString(), (String) combo_category.getSelectedItem(), stockid);
 
                 text_quantity.setText("");
                 combo_unit.setSelectedIndex(0);
                 text_description.setText("");
-                text_enduser.setText("");
+                combo_enduser.setSelectedIndex(0);
                 combo_category.setSelectedIndex(0);
                 btn_addstock.setEnabled(false);
             }
@@ -385,7 +384,7 @@ public class panel_requisitionslip extends JPanel {
                 text_quantity.setText("");
                 combo_unit.setSelectedIndex(0);
                 text_description.setText("");
-                text_enduser.setText("");
+                combo_enduser.setSelectedIndex(0);
                 combo_category.setSelectedIndex(0);
 
                 buffindex = -1;

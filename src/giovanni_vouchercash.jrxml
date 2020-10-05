@@ -26,7 +26,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="110" splitType="Stretch">
+		<band height="128" splitType="Stretch">
 			<image>
 				<reportElement x="120" y="-1" width="60" height="62" uuid="1e57b41b-cac7-4005-a6b1-9c81022546ce"/>
 				<imageExpression><![CDATA["logo1.png"]]></imageExpression>
@@ -51,14 +51,7 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<imageExpression><![CDATA["ajalogo.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="223" y="61" width="117" height="19" uuid="9b5fbffc-f91f-4128-b0a3-73d05305aa9f"/>
-				<textElement>
-					<font fontName="Arial" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CASH VOUCHER]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="411" y="65" width="51" height="10" uuid="c4e0c16c-5d99-4dbb-8930-c8efad38fb77">
+				<reportElement x="411" y="85" width="51" height="10" uuid="c4e0c16c-5d99-4dbb-8930-c8efad38fb77">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -67,7 +60,7 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<text><![CDATA[Voucher No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="411" y="75" width="51" height="10" uuid="a46eaa7a-a04d-4ea2-8a2d-3509d7090f76">
+				<reportElement x="411" y="95" width="51" height="10" uuid="a46eaa7a-a04d-4ea2-8a2d-3509d7090f76">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -76,7 +69,7 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="411" y="95" width="51" height="10" uuid="d6ac32c8-18e9-4902-bbcd-d68acb0cb9d8">
+				<reportElement x="411" y="115" width="51" height="10" uuid="d6ac32c8-18e9-4902-bbcd-d68acb0cb9d8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -85,7 +78,7 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<text><![CDATA[Project]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="462" y="65" width="118" height="10" uuid="60418b50-adde-4960-be15-daed97804de1">
+				<reportElement x="462" y="85" width="118" height="10" uuid="60418b50-adde-4960-be15-daed97804de1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -94,7 +87,7 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<textFieldExpression><![CDATA[$P{voucherid}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="462" y="75" width="118" height="10" uuid="26a6ba65-df5c-4c6c-91f4-fbd5dfee74a4">
+				<reportElement x="462" y="95" width="118" height="10" uuid="26a6ba65-df5c-4c6c-91f4-fbd5dfee74a4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -103,7 +96,7 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="462" y="95" width="118" height="10" uuid="7f8c6d49-ca66-439f-b405-03d3984158c9">
+				<reportElement x="462" y="115" width="118" height="10" uuid="7f8c6d49-ca66-439f-b405-03d3984158c9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -112,19 +105,19 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<textFieldExpression><![CDATA[$P{project}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="default" x="0" y="89" width="40" height="14" uuid="900b6761-0e97-41c8-ab82-4540d57128ba">
+				<reportElement style="default" x="0" y="87" width="40" height="14" uuid="900b6761-0e97-41c8-ab82-4540d57128ba">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<text><![CDATA[Paid to]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="default" x="46" y="89" width="338" height="14" uuid="a698d63f-abf7-45fd-ae4c-99bc3d3a053d">
+				<reportElement style="default" x="46" y="87" width="338" height="14" uuid="a698d63f-abf7-45fd-ae4c-99bc3d3a053d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{suppliername}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="411" y="85" width="51" height="10" uuid="7fd8fa46-9e96-4845-abe2-33282a538699">
+				<reportElement x="411" y="105" width="51" height="10" uuid="7fd8fa46-9e96-4845-abe2-33282a538699">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -133,7 +126,7 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<text><![CDATA[Time]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="default" x="462" y="85" width="118" height="10" uuid="de18346e-3d2d-4f9a-b91b-0c2804a646c1">
+				<reportElement style="default" x="462" y="105" width="118" height="10" uuid="de18346e-3d2d-4f9a-b91b-0c2804a646c1">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -142,6 +135,22 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{time}]]></textFieldExpression>
 			</textField>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="65" width="612" height="17" backcolor="#FFFF00" uuid="d4641794-371a-4b12-8d46-1850b76c8f1f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="250" y="0" width="117" height="17" uuid="9b5fbffc-f91f-4128-b0a3-73d05305aa9f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CASH VOUCHER]]></text>
+				</staticText>
+			</frame>
 		</band>
 	</title>
 	<columnHeader>

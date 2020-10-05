@@ -57,8 +57,8 @@ public class panel_bank extends JPanel {
         listselectionmodel.addListSelectionListener(handler);
         tbl_banks.setSelectionModel(listselectionmodel);
 
-        lbl_list = new JLabel("Bank List");
-        lbl_title = new JLabel("Input Bank Details");
+        lbl_list = new JLabel("Company Bank List");
+        lbl_title = new JLabel("Input Company Bank Details");
         lbl_accountname = new JLabel("Account Name :");
         lbl_accountnum = new JLabel("Account Number :");
         lbl_bankname = new JLabel("Bank Name :");

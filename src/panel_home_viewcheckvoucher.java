@@ -23,7 +23,7 @@ public class panel_home_viewcheckvoucher extends JPanel {
     int voucherid;
     Date date;
 
-    public panel_home_viewcheckvoucher(String poid) throws Exception {
+    public panel_home_viewcheckvoucher(String poid, String checknum) throws Exception {
         setLayout(new BorderLayout());
 
         date = new Date();
@@ -106,7 +106,7 @@ public class panel_home_viewcheckvoucher extends JPanel {
                 String time;
                 time = LocalTime.now().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_TIME);
 
-                conn3.addVouchercheck(poid, datenow, suppliername, accountname, accountnum, time);
+                conn3.addVouchercheck(poid, datenow, suppliername, accountname, accountnum, time, checknum);
                 rset = conn3.checkDuplicatevouchercheck(poid);
                 rset.first();
                 voucherid = rset.getInt("vouchercheck_id");
@@ -131,6 +131,7 @@ public class panel_home_viewcheckvoucher extends JPanel {
             parameters.put("ponum", poid);
             parameters.put("numtowords", s);
             parameters.put("time", timenow);
+            parameters.put("checknum", rsetpurchaseinfo.getString("checknum"));
 
             conn.close();
         } catch (Exception exception) {
@@ -154,7 +155,5 @@ public class panel_home_viewcheckvoucher extends JPanel {
         } catch (JRException jrException) {
             jrException.printStackTrace();
         }
-
-
     }
 }

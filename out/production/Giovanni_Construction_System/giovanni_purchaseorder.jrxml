@@ -35,7 +35,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="141" splitType="Stretch">
+		<band height="144" splitType="Stretch">
 			<image>
 				<reportElement x="57" y="-13" width="60" height="62" uuid="c51b477e-0cb4-40ca-8633-faa7060f6cfe"/>
 				<imageExpression><![CDATA["logo1.png"]]></imageExpression>
@@ -59,13 +59,6 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				<reportElement x="322" y="-9" width="47" height="58" uuid="e87f39f0-1a1b-4aee-a835-ffbddbcb91e1"/>
 				<imageExpression><![CDATA["ajalogo.png"]]></imageExpression>
 			</image>
-			<staticText>
-				<reportElement x="146" y="55" width="138" height="26" uuid="269d0640-4f27-4306-ae0c-9d7202b199bd"/>
-				<textElement>
-					<font fontName="Arial" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PURCHASE ORDER]]></text>
-			</staticText>
 			<staticText>
 				<reportElement style="default" x="0" y="81" width="130" height="14" uuid="7c5f8253-4626-4ea4-b11e-8ec8c74f6a36">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -145,6 +138,21 @@ E-mail address: giovanni_constbxu@yahoo.com]]></text>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{time}]]></textFieldExpression>
 			</textField>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="55" width="470" height="17" backcolor="#FFFF00" uuid="36d5f9ae-529b-4a68-a21f-aa6f8a8d4bef">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="167" y="0" width="138" height="17" uuid="269d0640-4f27-4306-ae0c-9d7202b199bd">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Arial" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PURCHASE ORDER]]></text>
+				</staticText>
+			</frame>
 		</band>
 	</title>
 	<columnHeader>

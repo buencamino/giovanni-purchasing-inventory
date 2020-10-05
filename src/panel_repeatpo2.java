@@ -239,9 +239,7 @@ public class panel_repeatpo2 extends JPanel {
                 else
                 {
                     JOptionPane.showMessageDialog(this, "Some items are missing quantity!", "Incomplete Information", JOptionPane.ERROR_MESSAGE);
-
                 }
-
             }
         }
     }

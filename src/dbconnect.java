@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 public class dbconnect {
@@ -697,15 +699,16 @@ public class dbconnect {
         return suppliername;
     }
 
-    public void addVouchercheck (String poid, String date, String suppliername, String accountname, String accountnum, String time) throws Exception
+    public void addVouchercheck (String poid, String date, String suppliername, String accountname, String accountnum, String time, String checknum) throws Exception
     {
         connect();
-        PreparedStatement pstatement = conn.prepareStatement("insert into tbl_vouchercheck (purchaseorder_id, suppliername, accountname, accountnum, date, time) values (?, ?, ?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?)");
+        PreparedStatement pstatement = conn.prepareStatement("insert into tbl_vouchercheck (purchaseorder_id, suppliername, accountname, accountnum, date, time, checknum) values (?, ?, ?, ?, str_to_date('" + date + "', '%m/%d/%Y'), ?, ?)");
         pstatement.setInt(1, Integer.parseInt(poid));
         pstatement.setString(2, suppliername);
         pstatement.setString(3, accountname);
         pstatement.setString(4, accountnum);
         pstatement.setString(5, time);
+        pstatement.setString(6, checknum);
 
         pstatement.executeUpdate();
         pstatement.close();
@@ -766,13 +769,13 @@ public class dbconnect {
         }
     }
 
-    public void updatePobank(String bankid, String poid) throws Exception
+    public void updatePobank(String bankid, String poid, String checknum) throws Exception
     {
         try
         {
             connect();
             statement = conn.createStatement();
-            statement.executeUpdate("update tbl_purchaseorder set bankchosen = " + bankid + " where purchaseorder_id = " + poid);
+            statement.executeUpdate("update tbl_purchaseorder set bankchosen = " + bankid + ", checknum = '" + checknum + "' where purchaseorder_id = " + poid);
         }
         catch (Exception x)
         {
@@ -895,6 +898,7 @@ public class dbconnect {
 
         return rset;
     }
+
     public ResultSet checkDuplicatebank (String bankname, String accountname, String accountnum) throws Exception{
         rset = null;
 
@@ -981,6 +985,293 @@ public class dbconnect {
         }
     }
 
+    public ResultSet getApprovedpo () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select *, TIME_FORMAT(time, '%h:%i %p') as timerecorded, date_format(date, '%m/%d/%Y') as newdate from tbl_purchaseorder where approved = 1");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getIncompletepo () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select *, TIME_FORMAT(time, '%h:%i %p') as timerecorded, date_format(date, '%m/%d/%Y') as newdate from tbl_purchaseorder where approved = 1 && complete = 0");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public void Completepo(String poid, String path, String drnum, String checkername) throws Exception
+    {
+        ResultSet rset1 = null, rset2 = null, rset3 = null, rset4 = null, rset5 = null, rset6 = null;
+        String itemid, datenow;
+        Statement statement2 = null, statement3 = null, statement4 = null, statement5 = null;
+        int balance, quantity;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        java.util.Date date = new Date();
+        datenow = formatter.format(date);
+
+        try {
+            connect();
+            statement = conn.createStatement();
+            statement.executeUpdate("update tbl_purchaseorder set imagepath = '" + path + "', complete = 1 where purchaseorder_id = " + poid);
+
+            statement2 = conn.createStatement();
+            rset6 = statement2.executeQuery("select * from tbl_purchaseorderitems where purchaseorder_id = " + poid);
+
+            //rset = getPurchaseorderitems(poid);
+
+            while(rset6.next())
+            {
+                itemid = rset6.getString("item_id");
+                quantity = rset6.getInt("quantity");
+
+                statement3 = conn.createStatement();
+                rset2 = statement3.executeQuery("select * from tbl_stockcard where stock_id = " + itemid);
+
+                rset2.first();
+                balance = rset2.getInt("quantity");
+
+                statement4 = conn.createStatement();
+                rset3 = statement4.executeQuery("select * from tbl_purchaseorder where purchaseorder_id = " + poid);
+
+                rset3.first();
+                statement5 = conn.createStatement();
+                rset4 = statement5.executeQuery("select * from tbl_canvass where canvass_id = " + rset3.getString("canvass_id"));
+
+                rset4.first();
+                rset5 = getReqinfo(rset4.getString("requisition_num"));
+
+                rset5.first();
+                PreparedStatement pstatement = conn.prepareStatement("insert into tbl_stocktransaction (date, drnum, receivedby, quantityin, balance, conformedby, purpose, item_id) values (str_to_date('" + datenow + "', '%m/%d/%Y'), ?, ?, ?, ?, ?, ?, ?)");
+                pstatement.setString(1, drnum);
+                pstatement.setString(2, checkername);
+                pstatement.setString(3, String.valueOf(quantity));
+                pstatement.setString(4, String.valueOf(quantity + balance));
+                pstatement.setString(5, rset5.getString("preparedby"));
+                pstatement.setString(6, rset5.getString("purpose"));
+                pstatement.setString(7, itemid);
+
+                pstatement.executeUpdate();
+
+                statement.executeUpdate("update tbl_stockcard set quantity = quantity + " + quantity + ", permanent = 1 where stock_id = " + itemid);
+            }
+
+            System.out.println(rset4.getString("requisition_num"));
+            statement.executeUpdate("delete from tbl_stockcard where permanent = 0 and requisition_num = " + rset4.getString("requisition_num"));
+
+            statement.close();
+            statement2.close();
+            statement3.close();
+            statement4.close();
+            statement5.close();
+            conn.close();
+        }
+        catch (Exception x)
+        {
+            throw x;
+        }
+    }
+    public ResultSet getCompletepo () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select *, TIME_FORMAT(time, '%h:%i %p') as timerecorded, date_format(date, '%m/%d/%Y') as newdate from tbl_purchaseorder where approved = 1 && complete = 1");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getCheckerlist () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_checker");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet checkDuplicatechecker (String checkername) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_checker where checkername = '" + checkername + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public void addChecker(String checkername) throws Exception
+    {
+        try
+        {
+            connect();
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_checker (checkername) values (?)");
+            pstatement.setString(1, checkername);
+
+            pstatement.executeUpdate();
+
+            pstatement.close();
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+
+    public ResultSet getStockpermanent () throws Exception {
+        rset = null;
+
+        try {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_stockcard where permanent = 1");
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getStockinfo (String itemid) throws Exception {
+        rset = null;
+
+        try {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_stockcard where stock_id = " + itemid);
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getStocktransaction (String itemid) throws Exception {
+        rset = null;
+
+        try {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_stocktransaction where item_id = " + itemid);
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public String getStockbegbalance (String itemid) throws Exception {
+        rset = null;
+        String begbalance;
+
+        try {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("SELECT * FROM tbl_stocktransaction where item_id = " + itemid + " order by date limit 1");
+            rset.first();
+            begbalance = rset.getString("quantityin");
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return begbalance;
+    }
+
+    public void addEnduser(String enduser) throws Exception
+    {
+        try
+        {
+            connect();
+            PreparedStatement pstatement = conn.prepareStatement("insert into tbl_enduser (endusername) values (?)");
+            pstatement.setString(1, enduser);
+
+            pstatement.executeUpdate();
+
+            pstatement.close();
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+
+    public ResultSet checkDuplicateenduser (String enduser) throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_enduser where endusername = '" + enduser + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public ResultSet getEnduserlist () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_enduser");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
 
     public void close() throws Exception
     {

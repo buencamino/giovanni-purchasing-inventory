@@ -7,7 +7,7 @@ import java.sql.*;
 public class panel_homemanager extends JPanel {
     JPanel pnl_notifications, pnl_west;
     JLabel lbl_approvalreq, lbl_countreq;
-    JButton btn_viewreq, btn_viewcanvass, btn_viewpurchaseorder;
+    JButton btn_viewreq, btn_viewcanvass, btn_viewpurchaseorder, btn_viewcomplete;
     ResultSet rset;
 
     public panel_homemanager() throws Exception {
@@ -31,6 +31,8 @@ public class panel_homemanager extends JPanel {
         btn_viewcanvass.addActionListener(control);
         btn_viewpurchaseorder = new JButton("View Purchase Orders");
         btn_viewpurchaseorder.addActionListener(control);
+        btn_viewcomplete = new JButton("View Completed Purchase Orders");
+        btn_viewcomplete.addActionListener(control);
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -59,6 +61,11 @@ public class panel_homemanager extends JPanel {
         c.gridx = 2;
         c.gridy = 2;
         pnl_notifications.add(btn_viewpurchaseorder, c);
+
+        //4th row
+        c.gridx = 2;
+        c.gridy = 3;
+        pnl_notifications.add(btn_viewcomplete, c);
 
         add(pnl_west);
         add(pnl_notifications);
@@ -128,6 +135,22 @@ public class panel_homemanager extends JPanel {
 
                 try {
                     mainFrame.pnl_center.add(new panel_viewpurchaseorder(), BorderLayout.CENTER);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+            }
+
+
+            if (source == btn_viewcomplete) {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+                try {
+                    mainFrame.pnl_center.add(new panel_viewcompletepo(), BorderLayout.CENTER);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

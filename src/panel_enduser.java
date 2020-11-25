@@ -70,8 +70,8 @@ public class panel_enduser extends JPanel{
             }
         });
 
-        btn_add = new JButton("Add Watchman/Checker");
-        btn_update = new JButton("Update Watchman/Checker");
+        btn_add = new JButton("Add End User");
+        btn_update = new JButton("Update End User");
         btn_update.setEnabled(false);
 
         btn_add.addActionListener(control);

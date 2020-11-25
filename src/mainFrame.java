@@ -11,7 +11,7 @@ public class mainFrame {
     JMenuItem menu1_home, menuforms_requisitionslip, menu1_exit, menumaintenance_project,
     menuforms_canvass, menuforms_purchaseorder, menumaintenance_supplier, menumaintenance_bank,
     menuforms_repeatpo, menureports_stockcard, menuactions_completepo, menumaintenance_checker,
-    menumaintenance_enduser;
+    menumaintenance_enduser, menumaintenance_users;
 
     public mainFrame() throws Exception {
         mainwindow = new JFrame("Giovanni Construction - Purchasing and Inventory System");
@@ -32,7 +32,7 @@ public class mainFrame {
         menuforms_requisitionslip = new JMenuItem("Requisition Slip");
         menumaintenance_project = new JMenuItem("Update Projects");
         menuforms_canvass = new JMenuItem("Canvass Sheet");
-        menuforms_purchaseorder = new JMenuItem("Purchase Order");
+        //menuforms_purchaseorder = new JMenuItem("Purchase Order");
         menumaintenance_supplier = new JMenuItem("Update Suppliers");
         menumaintenance_bank = new JMenuItem("Update Company Bank Details");
         menuforms_repeatpo = new JMenuItem("Repeat PO");
@@ -40,13 +40,14 @@ public class mainFrame {
         menuactions_completepo = new JMenuItem("Complete PO");
         menumaintenance_checker = new JMenuItem("Update Watchman/Checker");
         menumaintenance_enduser = new JMenuItem("Update End User");
+        menumaintenance_users = new JMenuItem("Manage Users");
 
         menu1_home.addActionListener(control);
         menu1_exit.addActionListener(control);
         menuforms_requisitionslip.addActionListener(control);
         menumaintenance_project.addActionListener(control);
         menuforms_canvass.addActionListener(control);
-        menuforms_purchaseorder.addActionListener(control);
+        //menuforms_purchaseorder.addActionListener(control);
         menumaintenance_supplier.addActionListener(control);
         menumaintenance_bank.addActionListener(control);
         menuforms_repeatpo.addActionListener(control);
@@ -54,13 +55,14 @@ public class mainFrame {
         menuactions_completepo.addActionListener(control);
         menumaintenance_checker.addActionListener(control);
         menumaintenance_enduser.addActionListener(control);
+        menumaintenance_users.addActionListener(control);
 
         menu1.add(menu1_home);
         menu1.addSeparator();
         menu1.add(menu1_exit);
         menuforms.add(menuforms_requisitionslip);
         menuforms.add(menuforms_canvass);
-        menuforms.add(menuforms_purchaseorder);
+        //menuforms.add(menuforms_purchaseorder);
         menuforms.add(menuforms_repeatpo);
         menureports.add(menureports_stockcard);
 
@@ -75,6 +77,10 @@ public class mainFrame {
         {
             menumaintenance.add(menumaintenance_bank);
             menuactions.add(menuactions_completepo);
+        }
+        else if (form_login.userlevel == 3)
+        {
+            menumaintenance.add(menumaintenance_users);
         }
 
         mb.add(menu1);
@@ -91,6 +97,7 @@ public class mainFrame {
         else if (form_login.userlevel == 3)
         {
             mb.add(menureports);
+            mb.add(menumaintenance);
         }
 
         pnl_center = new JPanel();
@@ -322,6 +329,22 @@ public class mainFrame {
 
                 try {
                     pnl_center.add(new panel_enduser(), BorderLayout.CENTER);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                pnl_center.repaint();
+                pnl_center.revalidate();
+            }
+
+            if(source == menumaintenance_users)
+            {
+                pnl_center.removeAll();
+                pnl_center.repaint();
+                pnl_center.revalidate();
+
+                try {
+                    pnl_center.add(new panel_manageusers(), BorderLayout.CENTER);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

@@ -23,7 +23,7 @@ public class panel_homeaccountant_viewpo extends JPanel {
     JTable tbl_records;
     JScrollPane sp;
     ListSelectionModel listselectionmodel;
-    JButton btn_generatevoucher, btn_generate, btn_updateinfo;
+    JButton btn_generatevoucher, btn_generate, btn_updateinfo, btn_back;
     String buff_poid, selectedterms;
     JPanel pnl_bankdetails;
     JComboBox combo_bankname;
@@ -112,6 +112,9 @@ public class panel_homeaccountant_viewpo extends JPanel {
         btn_generate.addActionListener(control);
         btn_generatevoucher.addActionListener(control);
 
+        btn_back = new JButton("Back");
+        btn_back.addActionListener(control);
+
         tablemodel = new DefaultTableModel();
         headers.add("PO #");
         headers.add("Prepared By");
@@ -173,6 +176,11 @@ public class panel_homeaccountant_viewpo extends JPanel {
         c.gridx = 0;
         c.gridy = 3;
         add(btn_generatevoucher, c);
+
+        //5th row
+        c.gridx = 0;
+        c.gridy = 4;
+        add(btn_back, c);
     }
 
     public void refreshTable(ResultSet rset1) throws Exception
@@ -346,6 +354,17 @@ public class panel_homeaccountant_viewpo extends JPanel {
                     mainFrame.pnl_center.repaint();
                     mainFrame.pnl_center.revalidate();
                 }
+            }
+
+            if (source == btn_back) {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+                mainFrame.pnl_center.add(new panel_homeaccountant(), BorderLayout.CENTER);
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
             }
         }
     }

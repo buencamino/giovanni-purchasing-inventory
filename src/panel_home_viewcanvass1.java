@@ -4,6 +4,8 @@ import net.sf.jasperreports.swing.JRViewer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +13,19 @@ import java.util.Map;
 
 public class panel_home_viewcanvass1 extends JPanel {
     ResultSet rsetcanvassinfo, rsetcanvassitems;
+    JPanel pnl_center, pnl_south;
+    JButton btn_back;
 
     public panel_home_viewcanvass1(String canvassid) throws JRException {
+        HandleControlButton control = new HandleControlButton();
+
         setLayout(new BorderLayout());
+
+        pnl_center = new JPanel(new BorderLayout());
+        pnl_south = new JPanel(new FlowLayout());
+
+        btn_back = new JButton("Back");
+        btn_back.addActionListener(control);
 
         dbconnect conn = new dbconnect();
 
@@ -83,9 +95,36 @@ public class panel_home_viewcanvass1 extends JPanel {
             //((JPanel)viewreport.getComponent(0)).remove(1);
             //pnl_center.add(viewreport, BorderLayout.CENTER);
 
-            add(new JRViewer(filledReport), BorderLayout.CENTER);
+            pnl_center.add(new JRViewer(filledReport), BorderLayout.CENTER);
         } catch (JRException e) {
             e.printStackTrace();
+        }
+
+        pnl_south.add(btn_back);
+
+        add(pnl_center, BorderLayout.CENTER);
+        add(pnl_south, BorderLayout.SOUTH);
+    }
+
+    class HandleControlButton extends Component implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            Object source = e.getSource();
+
+            if (source == btn_back) {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+
+                try {
+                    mainFrame.pnl_center.add(new panel_home_viewcanvass(), BorderLayout.CENTER);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+            }
         }
     }
 }

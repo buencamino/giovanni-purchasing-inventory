@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class panel_home_viewpo extends JPanel {
     JLabel lbl_title;
-    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled, btn_generate;
+    JButton btn_generate1, btn_generate2, btn_generate3, btn_approved, btn_cancelled, btn_generate, btn_back;
     DefaultTableModel tablemodel;
     Vector<String> headers = new Vector<String>();
     ResultSet rset;
@@ -37,6 +37,7 @@ public class panel_home_viewpo extends JPanel {
         btn_generate3 = new JButton("Generate PO Supplier 3");
         */
 
+        btn_back = new JButton("Back");
         btn_approved = new JButton("Approved by Management");
         btn_cancelled = new JButton("Cancelled/Disapproved");
         /*
@@ -58,6 +59,7 @@ public class panel_home_viewpo extends JPanel {
         btn_generate = new JButton("Generate PO");
         btn_generate.setEnabled(false);
         btn_generate.addActionListener(control);
+        btn_back.addActionListener(control);
 
         tablemodel = new DefaultTableModel();
         headers.add("PO #");
@@ -127,7 +129,10 @@ public class panel_home_viewpo extends JPanel {
         c.gridx = 1;
         add(btn_cancelled, c);
 
-
+        //5th row
+        c.gridx = 0;
+        c.gridy = 4;
+        add(btn_back, c);
     }
 
     class selectionHandler implements ListSelectionListener
@@ -342,6 +347,18 @@ public class panel_home_viewpo extends JPanel {
                 {
                     System.out.println(j.getMessage());
                 }
+            }
+
+            if (source == btn_back)
+            {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+                mainFrame.pnl_center.add(new panel_homeengineer(), BorderLayout.CENTER);
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
             }
         }
     }

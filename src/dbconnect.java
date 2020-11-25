@@ -317,9 +317,9 @@ public class dbconnect {
         return rset;
     }
 
-    public void addPurchaseorder(String canvassnum, String preparedby, String supplier1, String supplier2, String supplier3, Vector<Vector<Object>> data, String date, int supplierchosen, String time) throws Exception {
+    public void addPurchaseorder(String reqnum, String preparedby, String supplier1, String supplier2, String supplier3, Vector<Vector<Object>> data, String date, int supplierchosen, String time) throws Exception {
         String buffid = null;
-        String projectname = null, rsnum = null;
+        String projectname = null, rsnum = reqnum, canvassnum = null;
 
         try
         {
@@ -327,11 +327,11 @@ public class dbconnect {
 
             rset = null;
             statement = conn.createStatement();
-            rset = statement.executeQuery("SELECT requisition_num FROM tbl_canvass where canvass_id = " + canvassnum);
+            rset = statement.executeQuery("SELECT canvass_id FROM tbl_canvass where requisition_num = " + reqnum);
 
             while (rset.next())
             {
-                rsnum = String.valueOf(rset.getInt("requisition_num"));
+                canvassnum = String.valueOf(rset.getInt("canvass_id"));
             }
 
             rset = null;
@@ -387,32 +387,32 @@ public class dbconnect {
                 //description
                 pstatement.setString(4, data.get(i).get(2).toString());
                 //unitprice
-                if (data.get(i).get(9).toString().equals("Supplier 1"))
+                if (supplierchosen == 1)
                     pstatement.setString(5, data.get(i).get(3).toString());
-                else if (data.get(i).get(9).toString().equals("Supplier 2"))
+                else if (supplierchosen == 2)
                     pstatement.setString(5, data.get(i).get(5).toString());
-                else if (data.get(i).get(9).toString().equals("Supplier 3"))
+                else if (supplierchosen == 3)
                     pstatement.setString(5, data.get(i).get(7).toString());
                 //amount
-                if (data.get(i).get(9).toString().equals("Supplier 1"))
+                if (supplierchosen == 1)
                     pstatement.setString(6, data.get(i).get(4).toString());
-                else if (data.get(i).get(9).toString().equals("Supplier 2"))
+                else if (supplierchosen == 2)
                     pstatement.setString(6, data.get(i).get(6).toString());
-                else if (data.get(i).get(9).toString().equals("Supplier 3"))
+                else if (supplierchosen == 3)
                     pstatement.setString(6, data.get(i).get(8).toString());
                 //supplierchosen
-                if (data.get(i).get(9).toString().equals("Supplier 1"))
+                if (supplierchosen == 1)
                     pstatement.setString(7, "1");
-                else if (data.get(i).get(9).toString().equals("Supplier 2"))
+                else if (supplierchosen == 2)
                     pstatement.setString(7, "2");
-                else if (data.get(i).get(9).toString().equals("Supplier 3"))
+                else if (supplierchosen == 3)
                     pstatement.setString(7, "3");
                 //suppliername
-                if (data.get(i).get(9).toString().equals("Supplier 1"))
+                if (supplierchosen == 1)
                     pstatement.setString(8, supplier1);
-                else if (data.get(i).get(9).toString().equals("Supplier 2"))
+                else if (supplierchosen == 2)
                     pstatement.setString(8, supplier2);
-                else if (data.get(i).get(9).toString().equals("Supplier 3"))
+                else if (supplierchosen == 3)
                     pstatement.setString(8, supplier3);
 
                 pstatement.executeUpdate();
@@ -1271,6 +1271,87 @@ public class dbconnect {
         }
 
         return rset;
+    }
+
+    public ResultSet getUserlist () throws Exception{
+        rset = null;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_user");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        return rset;
+    }
+
+    public void deleteUser(String userid) throws Exception
+    {
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            statement.executeUpdate("delete from tbl_user where userid = " + userid);
+        }
+        catch (Exception x)
+        {
+            throw x;
+        }
+    }
+
+    public boolean checkDuplicateuser (String username) throws Exception
+    {
+        rset = null;
+        int i = 0;
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            rset = statement.executeQuery("select * from tbl_user where username = '" + username + "'");
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+
+        while (rset.next())
+        {
+            i++;
+        }
+
+        if (i > 0)
+            return false;
+        else if (i == 0)
+            return true;
+        return false;
+    }
+
+    public void addUser (String fullname, String username, String password, String accounttype) throws Exception
+    {
+        String type = null;
+
+        if (accounttype.equals("Project Manager"))
+            type = "3";
+        else if (accounttype.equals("Engineer/Purchaser"))
+            type = "1";
+        else if (accounttype.equals("Accountant"))
+            type = "2";
+
+        connect();
+        PreparedStatement pstatement = conn.prepareStatement("insert into tbl_user (username, password, level, fullname) values (?, ?, ?, ?)");
+        pstatement.setString(1, username);
+        pstatement.setString(2, password);
+        pstatement.setString(3, type);
+        pstatement.setString(4, fullname);
+
+        pstatement.executeUpdate();
+        pstatement.close();
     }
 
     public void close() throws Exception

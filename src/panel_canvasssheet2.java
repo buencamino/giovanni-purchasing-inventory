@@ -500,6 +500,26 @@ public class panel_canvasssheet2 extends JPanel {
 
                 try {
                     conn.addCanvasssheet(reqnum, suppliera, supplierb, supplierc, termsa, termsb, termsc, data, form_login.fullname, reco, time, datenow);
+
+                    double amt1 = 0, amt2 = 0, amt3 = 0;
+
+                    for (i = 0; i < data.size(); i++)
+                    {
+                        amt1 += Double.parseDouble(data.get(i).get(4).toString());
+                        amt2 += Double.parseDouble(data.get(i).get(6).toString());
+                        amt3 += Double.parseDouble(data.get(i).get(8).toString());
+                    }
+
+                    double arramount[] = new double[]{amt1, amt2, amt3};
+
+                    System.out.println("1:" + amt1 + " 2:" + amt2 + " 3:" +amt3);
+
+                    int supplierchosen = getMin(arramount);
+
+                    System.out.println(supplierchosen);
+
+                    conn.addPurchaseorder(reqnum, form_login.fullname, suppliera, supplierb, supplierc, data, datenow, supplierchosen, time);
+                    conn.close();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -588,5 +608,18 @@ public class panel_canvasssheet2 extends JPanel {
         tablemodel.fireTableDataChanged();
 
         tbl_itemlist.getColumnModel().getColumn(2).setCellRenderer(new WordWrapCellRenderer());
+    }
+
+    public static int getMin(double[] inputArray){
+        int supplierchosen = 1;
+
+        double minValue = inputArray[0];
+        for(int i=1;i<inputArray.length;i++){
+            if(inputArray[i] < minValue){
+                minValue = inputArray[i];
+                supplierchosen = i + 1;
+            }
+        }
+        return supplierchosen;
     }
 }

@@ -4,6 +4,8 @@ import net.sf.jasperreports.swing.JRViewer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,9 +13,19 @@ import java.sql.*;
 
 public class panel_home_viewpo1 extends JPanel {
     ResultSet rsetpurchaseitems, rsetpurchaseinfo;
+    JPanel pnl_center, pnl_south;
+    JButton btn_back;
 
     public panel_home_viewpo1(String purchaseid) throws JRException {
+        HandleControlButton control = new HandleControlButton();
+
         setLayout(new BorderLayout());
+
+        pnl_center = new JPanel(new BorderLayout());
+        pnl_south = new JPanel(new FlowLayout());
+
+        btn_back = new JButton("Back");
+        btn_back.addActionListener(control);
 
         String suppliername = null;
         dbconnect conn2 = new dbconnect();
@@ -89,7 +101,7 @@ public class panel_home_viewpo1 extends JPanel {
                 //report = JasperCompileManager.compileReport(dis);
                 JasperPrint filledReport = JasperFillManager.fillReport(report, parameters, jrDatasource);
 
-                add(new JRViewer(filledReport), BorderLayout.CENTER);
+                pnl_center.add(new JRViewer(filledReport), BorderLayout.CENTER);
                 repaint();
                 revalidate();
             } catch (JRException jrException) {
@@ -98,5 +110,33 @@ public class panel_home_viewpo1 extends JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "There is no existing 3rd supplier for this purchase order!", "No 3rd Supplier", JOptionPane.ERROR_MESSAGE);
         }
+
+        pnl_south.add(btn_back);
+
+        add(pnl_center, BorderLayout.CENTER);
+        add(pnl_south, BorderLayout.SOUTH);
     }
+
+    class HandleControlButton extends Component implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            Object source = e.getSource();
+
+            if (source == btn_back) {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+
+                try {
+                    mainFrame.pnl_center.add(new panel_home_viewpo(), BorderLayout.CENTER);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+            }
+        }
+    }
+
 }

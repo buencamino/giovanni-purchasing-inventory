@@ -4,8 +4,9 @@ import net.sf.jasperreports.swing.JRViewer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -19,12 +20,22 @@ import java.util.Date;
 public class panel_home_viewcheckvoucher extends JPanel {
     String suppliername = null;
     ResultSet rsetpurchaseitems, rsetpurchaseinfo, rsetsupplierinfo, rset, rsetbankinfo, rsetsum;
-    String datenow, accountname, accountnum, bankname, bankaccountname, bankaccountnum, s, timenow;
+    String datenow, accountname, accountnum, bankname, bankaccountname, bankaccountnum, s;
     int voucherid;
     Date date;
+    JButton btn_back;
+    JPanel pnl_center, pnl_south;
 
     public panel_home_viewcheckvoucher(String poid, String checknum) throws Exception {
+        HandleControlButton control = new HandleControlButton();
+
         setLayout(new BorderLayout());
+
+        btn_back = new JButton("Back");
+        btn_back.addActionListener(control);
+
+        pnl_center = new JPanel(new BorderLayout());
+        pnl_south = new JPanel(new FlowLayout());
 
         date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
@@ -149,11 +160,38 @@ public class panel_home_viewcheckvoucher extends JPanel {
             //report = JasperCompileManager.compileReport(dis);
             JasperPrint filledReport = JasperFillManager.fillReport(report, parameters, jrDatasource);
 
-            add(new JRViewer(filledReport), BorderLayout.CENTER);
-            repaint();
-            revalidate();
+            pnl_center.add(new JRViewer(filledReport), BorderLayout.CENTER);
+            pnl_center.repaint();
+            pnl_center.revalidate();
         } catch (JRException jrException) {
             jrException.printStackTrace();
+        }
+
+        pnl_south.add(btn_back);
+
+        add(pnl_center, BorderLayout.CENTER);
+        add(pnl_south, BorderLayout.SOUTH);
+    }
+
+    class HandleControlButton extends Component implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            Object source = e.getSource();
+
+            if (source == btn_back) {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+
+                try {
+                    mainFrame.pnl_center.add(new panel_homeaccountant_viewpo(), BorderLayout.CENTER);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+            }
         }
     }
 }

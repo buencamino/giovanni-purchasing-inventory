@@ -19,7 +19,7 @@ public class panel_home_viewrs extends JPanel {
     Vector<Vector<Object>> data;
     ResultSet rset;
     String buff_reqid;
-    JButton btn_generate;
+    JButton btn_generate, btn_back;
 
     public panel_home_viewrs() throws Exception {
         setLayout(new GridBagLayout());
@@ -31,6 +31,9 @@ public class panel_home_viewrs extends JPanel {
         btn_generate = new JButton("Generate Requisition Slip");
         btn_generate.setEnabled(false);
         btn_generate.addActionListener(control);
+
+        btn_back = new JButton("Back");
+        btn_back.addActionListener(control);
 
         tablemodel = new DefaultTableModel();
         headers.add("Req #");
@@ -80,6 +83,9 @@ public class panel_home_viewrs extends JPanel {
         c.gridwidth = 1;
         c.anchor = GridBagConstraints.LINE_START;
         add(btn_generate, c);
+
+        c.gridx = 0;
+        add(btn_back, c);
     }
 
     class selectionHandler implements ListSelectionListener {
@@ -130,8 +136,19 @@ public class panel_home_viewrs extends JPanel {
                 mainFrame.pnl_center.repaint();
                 mainFrame.pnl_center.revalidate();
 
-
                 mainFrame.pnl_center.add(new panel_home_viewrs1(buff_reqid), BorderLayout.CENTER);
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+            }
+
+            if (source == btn_back) {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+
+                mainFrame.pnl_center.add(new panel_homeengineer(), BorderLayout.CENTER);
 
                 mainFrame.pnl_center.repaint();
                 mainFrame.pnl_center.revalidate();

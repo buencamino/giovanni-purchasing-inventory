@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class panel_home_viewcanvass extends JPanel {
     JLabel lbl_title;
-    JButton btn_generate;
+    JButton btn_generate, btn_back;
     DefaultTableModel tablemodel;
     Vector<String> headers = new Vector<String>();
     ResultSet rset;
@@ -33,6 +33,9 @@ public class panel_home_viewcanvass extends JPanel {
         btn_generate = new JButton("Generate Canvass Sheet");
         btn_generate.setEnabled(false);
         btn_generate.addActionListener(control);
+
+        btn_back = new JButton("Back");
+        btn_back.addActionListener(control);
 
         tablemodel = new DefaultTableModel();
         headers.add("Canvass #");
@@ -85,6 +88,9 @@ public class panel_home_viewcanvass extends JPanel {
         c.gridwidth = 1;
         c.anchor = GridBagConstraints.LINE_START;
         add(btn_generate, c);
+
+        c.gridx = 0;
+        add(btn_back, c);
     }
 
     class selectionHandler implements ListSelectionListener
@@ -147,6 +153,17 @@ public class panel_home_viewcanvass extends JPanel {
                 } catch (JRException jrException) {
                     jrException.printStackTrace();
                 }
+
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+            }
+
+            if (source == btn_back) {
+                mainFrame.pnl_center.removeAll();
+                mainFrame.pnl_center.repaint();
+                mainFrame.pnl_center.revalidate();
+
+                mainFrame.pnl_center.add(new panel_homeengineer(), BorderLayout.CENTER);
 
                 mainFrame.pnl_center.repaint();
                 mainFrame.pnl_center.revalidate();

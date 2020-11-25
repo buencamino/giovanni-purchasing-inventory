@@ -1354,6 +1354,32 @@ public class dbconnect {
         pstatement.close();
     }
 
+    public void updateUser(String fullname, String password, String accounttype, String username) throws Exception
+    {
+        String type = null;
+
+        if (accounttype.equals("Project Manager"))
+            type = "3";
+        else if (accounttype.equals("Engineer/Purchaser"))
+            type = "1";
+        else if (accounttype.equals("Accountant"))
+            type = "2";
+
+        System.out.println(type);
+        System.out.println(username);
+
+        try
+        {
+            connect();
+            statement = conn.createStatement();
+            statement.executeUpdate("update tbl_user set fullname = '" + fullname + "', password = '" + password + "', level = " + type + " where username = '" + username + "'");
+        }
+        catch (Exception x)
+        {
+            throw x;
+        }
+    }
+
     public void close() throws Exception
     {
         try

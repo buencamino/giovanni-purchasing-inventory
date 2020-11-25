@@ -5,15 +5,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class dialog_adduser extends JDialog {
-    JLabel lbl_title, lbl_fullname, lbl_username, lbl_password, lbl_repassword, lbl_accounttype, lbl_error;
-    JTextField text_fullname, text_username, text_password, text_repassword;
+public class dialog_updateuser extends JDialog {
+    JLabel lbl_title, lbl_fullname, lbl_password, lbl_repassword, lbl_accounttype, lbl_error;
+    JTextField text_fullname, text_password, text_repassword;
     JComboBox combo_accounttype;
-    JButton btn_add, btn_cancel;
+    JButton btn_update, btn_cancel;
+    String buff_username;
 
-    public dialog_adduser()
+    public dialog_updateuser(String username, String fullname, String password, String accounttype)
     {
-        setTitle("Add User");
+        buff_username = username;
+
+        setTitle("Modify User Information");
         setLayout(new GridBagLayout());
 
         HandleControlButton control = new HandleControlButton();
@@ -22,7 +25,6 @@ public class dialog_adduser extends JDialog {
 
         lbl_title = new JLabel("User Information");
         lbl_fullname = new JLabel("Full Name :");
-        lbl_username = new JLabel("Username :");
         lbl_password = new JLabel("Password :");
         lbl_repassword = new JLabel("Re-enter password :");
         lbl_accounttype = new JLabel("Account Type :");
@@ -30,20 +32,16 @@ public class dialog_adduser extends JDialog {
         lbl_error.setForeground(Color.RED);
 
         text_fullname = new JTextField(20);
-        text_username = new JTextField(20);
         text_password = new JTextField(20);
         text_repassword = new JTextField(20);
+
+        text_fullname.setText(fullname);
+        text_password.setText(password);
+        text_repassword.setText(password);
 
         text_fullname.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 if (text_fullname.getText().length() >= 50 )
-                    e.consume();
-            }
-        });
-
-        text_username.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                if (text_username.getText().length() >= 50 )
                     e.consume();
             }
         });
@@ -67,12 +65,19 @@ public class dialog_adduser extends JDialog {
         combo_accounttype.addItem("Accountant");
         combo_accounttype.addItem("Project Manager");
 
-        btn_add = new JButton("Add User");
+        if (accounttype.equals("Engineer/Purchase"))
+            combo_accounttype.setSelectedIndex(0);
+        else if (accounttype.equals("Accountant"))
+            combo_accounttype.setSelectedIndex(1);
+        else if (accounttype.equals("Project Manager"))
+            combo_accounttype.setSelectedIndex(2);
+
+        btn_update = new JButton("Update User");
         btn_cancel = new JButton("Cancel");
-        btn_add.setPreferredSize(new Dimension(100, 25));
+        btn_update.setPreferredSize(new Dimension(130, 25));
         btn_cancel.setPreferredSize(new Dimension(90, 25));
 
-        btn_add.addActionListener(control);
+        btn_update.addActionListener(control);
         btn_cancel.addActionListener(control);
 
         //first row
@@ -97,25 +102,15 @@ public class dialog_adduser extends JDialog {
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_END;
-        add(lbl_username, c);
-
-        c.gridx = 1;
-        c.anchor = GridBagConstraints.LINE_START;
-        add(text_username, c);
-
-        //4th row
-        c.gridx = 0;
-        c.gridy = 3;
-        c.anchor = GridBagConstraints.LINE_END;
         add(lbl_password, c);
 
         c.gridx = 1;
         c.anchor = GridBagConstraints.LINE_START;
         add(text_password, c);
 
-        //5th row
+        //4th row
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = 3;
         c.anchor = GridBagConstraints.LINE_END;
         add(lbl_repassword, c);
 
@@ -123,9 +118,9 @@ public class dialog_adduser extends JDialog {
         c.anchor = GridBagConstraints.LINE_START;
         add(text_repassword, c);
 
-        //6th row
+        //5th row
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy = 4;
         c.anchor = GridBagConstraints.LINE_END;
         add(lbl_accounttype, c);
 
@@ -133,20 +128,20 @@ public class dialog_adduser extends JDialog {
         c.anchor = GridBagConstraints.LINE_START;
         add(combo_accounttype, c);
 
-        //7th row
+        //6th row
         c.gridx = 0;
-        c.gridy = 6;
+        c.gridy = 5;
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(20,0,20,10);
-        add(btn_add, c);
+        add(btn_update, c);
 
         c.gridx = 1;
         c.anchor = GridBagConstraints.LINE_START;
         add(btn_cancel, c);
 
-        //8th row
+        //7th row
         c.gridx = 0;
-        c.gridy = 7;
+        c.gridy = 6;
         c.insets = new Insets(5,0,0,10);
         c.gridwidth = 2;
         add(lbl_error, c);
@@ -158,31 +153,20 @@ public class dialog_adduser extends JDialog {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 
-            if (source == btn_add) {
+            if (source == btn_update) {
                 dbconnect conn = new dbconnect();
 
                 try {
-                    if(conn.checkDuplicateuser(text_username.getText()) && text_password.getText().equals(text_repassword.getText()))
+                    if(text_password.getText().equals(text_repassword.getText()))
                     {
-                        conn.addUser(text_fullname.getText(), text_username.getText(), text_password.getText(), combo_accounttype.getSelectedItem().toString());
-                        panel_manageusers.lbl_status.setText("Added " + text_fullname.getText() + " with username " + text_username.getText() + " to database!");
+                        conn.updateUser(text_fullname.getText(), text_password.getText(), combo_accounttype.getSelectedItem().toString(), buff_username);
+                        panel_manageusers.lbl_status.setText("Updated user information for " + text_fullname.getText() + " with username " + buff_username + "!");
                         conn.close();
                         dispose();
-                    }
-                    else if (conn.checkDuplicateuser(text_username.getText()) == false)
-                    {
-                        lbl_error.setText("Username already exists!");
-                        conn.close();
                     }
                     else if (!(text_password.getText().equals(text_repassword.getText())))
                     {
                         lbl_error.setText("Passwords entered do not match!");
-                        conn.close();
-                    }
-                    else
-                    {
-                        lbl_error.setText("Username already exists and passwords entered do not match!");
-                        conn.close();
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();
